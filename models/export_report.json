@@ -7,7 +7,7 @@
   },
   "detector": {
     "model": "yolov10n",
-    "onnx": "E:\\my_stuff\\budget scheduler\\models\\yolov10n_fp32.onnx",
+    "onnx": "models/yolov10n_fp32.onnx",
     "source": "yolov10n.pt",
     "inputs": [
       [
@@ -34,8 +34,12 @@
   },
   "segmenter": {
     "model": "segformer_b0_cityscapes",
-    "onnx": "E:\\my_stuff\\budget scheduler\\models\\segformer_b0_fp32.onnx",
+    "onnx": "models/segformer_b0_fp32.onnx",
     "source": "nvidia/segformer-b0-finetuned-cityscapes-512-1024",
+    "input_hw": [
+      576,
+      1024
+    ],
     "num_labels": 19,
     "id2label": {
       "0": "road",
@@ -87,6 +91,178 @@
           19,
           144,
           256
+        ]
+      ]
+    ],
+    "opset": 17
+  },
+  "segmenter_576x1024": {
+    "model": "segformer_b0_cityscapes",
+    "onnx": "models/segformer_b0_576x1024_fp32.onnx",
+    "source": "nvidia/segformer-b0-finetuned-cityscapes-512-1024",
+    "input_hw": [
+      576,
+      1024
+    ],
+    "num_labels": 19,
+    "torch_vs_onnx_cpu": {
+      "max_abs_diff": 1.33514404296875e-05,
+      "argmax_agreement": 1.0,
+      "output_shape": [
+        1,
+        19,
+        144,
+        256
+      ]
+    },
+    "inputs": [
+      [
+        "pixel_values",
+        [
+          1,
+          3,
+          576,
+          1024
+        ]
+      ]
+    ],
+    "outputs": [
+      [
+        "logits",
+        [
+          1,
+          19,
+          144,
+          256
+        ]
+      ]
+    ],
+    "opset": 17
+  },
+  "segmenter_448x800": {
+    "model": "segformer_b0_cityscapes",
+    "onnx": "models/segformer_b0_448x800_fp32.onnx",
+    "source": "nvidia/segformer-b0-finetuned-cityscapes-512-1024",
+    "input_hw": [
+      448,
+      800
+    ],
+    "num_labels": 19,
+    "torch_vs_onnx_cpu": {
+      "max_abs_diff": 1.239776611328125e-05,
+      "argmax_agreement": 1.0,
+      "output_shape": [
+        1,
+        19,
+        112,
+        200
+      ]
+    },
+    "inputs": [
+      [
+        "pixel_values",
+        [
+          1,
+          3,
+          448,
+          800
+        ]
+      ]
+    ],
+    "outputs": [
+      [
+        "logits",
+        [
+          1,
+          19,
+          112,
+          200
+        ]
+      ]
+    ],
+    "opset": 17
+  },
+  "segmenter_384x672": {
+    "model": "segformer_b0_cityscapes",
+    "onnx": "models/segformer_b0_384x672_fp32.onnx",
+    "source": "nvidia/segformer-b0-finetuned-cityscapes-512-1024",
+    "input_hw": [
+      384,
+      672
+    ],
+    "num_labels": 19,
+    "torch_vs_onnx_cpu": {
+      "max_abs_diff": 1.33514404296875e-05,
+      "argmax_agreement": 1.0,
+      "output_shape": [
+        1,
+        19,
+        96,
+        168
+      ]
+    },
+    "inputs": [
+      [
+        "pixel_values",
+        [
+          1,
+          3,
+          384,
+          672
+        ]
+      ]
+    ],
+    "outputs": [
+      [
+        "logits",
+        [
+          1,
+          19,
+          96,
+          168
+        ]
+      ]
+    ],
+    "opset": 17
+  },
+  "segmenter_288x512": {
+    "model": "segformer_b0_cityscapes",
+    "onnx": "models/segformer_b0_288x512_fp32.onnx",
+    "source": "nvidia/segformer-b0-finetuned-cityscapes-512-1024",
+    "input_hw": [
+      288,
+      512
+    ],
+    "num_labels": 19,
+    "torch_vs_onnx_cpu": {
+      "max_abs_diff": 1.811981201171875e-05,
+      "argmax_agreement": 1.0,
+      "output_shape": [
+        1,
+        19,
+        72,
+        128
+      ]
+    },
+    "inputs": [
+      [
+        "pixel_values",
+        [
+          1,
+          3,
+          288,
+          512
+        ]
+      ]
+    ],
+    "outputs": [
+      [
+        "logits",
+        [
+          1,
+          19,
+          72,
+          128
         ]
       ]
     ],

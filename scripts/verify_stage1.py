@@ -29,7 +29,7 @@ import cv2
 import numpy as np
 import onnxruntime as ort
 
-from bsched.config import load_config, resolve
+from bsched.config import load_config, relpath, resolve
 from bsched.models import (CITYSCAPES_NAMES, COCO_NAMES, det_postprocess, det_preprocess,
                            make_session, node_placement, seg_postprocess, seg_preprocess)
 from bsched.vis import draw_detections, draw_segmentation, side_by_side
@@ -159,8 +159,8 @@ def main():
     accs = [r["segmenter"]["sanity_pixel_acc_vs_bdd_gt"] for r in per_frame
             if "sanity_pixel_acc_vs_bdd_gt" in r["segmenter"]]
     summary = {
-        "config": cfg["_path"],
-        "frames_glob": pattern,
+        "config": relpath(cfg, cfg["_path"]),
+        "frames_glob": relpath(cfg, pattern),
         "n_frames": len(frames),
         "env": {"python": platform.python_version(), "os": platform.platform(),
                 "onnxruntime": ort.__version__, "available_providers": ort.get_available_providers(),

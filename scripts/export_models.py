@@ -19,7 +19,7 @@ import numpy as np
 import onnx
 import torch
 
-from bsched.config import load_config, resolve
+from bsched.config import load_config, relpath, resolve
 
 
 def export_yolo(cfg: dict) -> dict:
@@ -39,7 +39,7 @@ def export_yolo(cfg: dict) -> dict:
     produced = model.export(format="onnx", imgsz=h, opset=cfg["export"]["opset"],
                             dynamic=False, simplify=False, half=False, batch=1)
     shutil.move(produced, out)
-    return {"model": m["name"], "onnx": str(out), "source": m["weights"]}
+    return {"model": m["name"], "onnx": relpath(cfg, out), "source": m["weights"]}
 
 
 class _LogitsOnly(torch.nn.Module):
@@ -51,13 +51,13 @@ class _LogitsOnly(torch.nn.Module):
         return self.net(pixel_values=pixel_values).logits
 
 
-def export_segformer(cfg: dict) -> dict:
+def export_segformer(cfg: dict, hw=None, out=None) -> dict:
     from transformers import SegformerForSemanticSegmentation
 
     m = cfg["models"]["segmenter"]
-    out = resolve(cfg, m["onnx"])
+    out = resolve(cfg, out or m["onnx"])
     out.parent.mkdir(parents=True, exist_ok=True)
-    h, w = m["input_hw"]
+    h, w = hw or m["input_hw"]
 
     net = SegformerForSemanticSegmentation.from_pretrained(m["hf_id"]).eval()
     wrapped = _LogitsOnly(net).eval()
@@ -79,8 +79,8 @@ def export_segformer(cfg: dict) -> dict:
         "argmax_agreement": float((ref.argmax(1) == got.argmax(1)).mean()),
         "output_shape": list(got.shape),
     }
-    return {"model": m["name"], "onnx": str(out), "source": m["hf_id"],
-            "num_labels": net.config.num_labels, "id2label": net.config.id2label,
+    return {"model": m["name"], "onnx": relpath(cfg, out), "source": m["hf_id"],
+            "input_hw": [h, w], "num_labels": net.config.num_labels, "id2label": net.config.id2label,
             "torch_vs_onnx_cpu": parity}
 
 
@@ -99,8 +99,14 @@ def main():
         "detector": export_yolo(cfg),
         "segmenter": export_segformer(cfg),
     }
-    for key in ("detector", "segmenter"):
-        mp = onnx.load(report[key]["onnx"])
+    # Resolution sweep (Stage 2b): one static-shape export per input size.
+    sweep = cfg["models"]["segmenter"].get("sweep_hw", [])
+    pattern = cfg["models"]["segmenter"].get("sweep_onnx", "models/segformer_b0_{h}x{w}_fp32.onnx")
+    for h, w in sweep:
+        r = export_segformer(cfg, (h, w), pattern.format(h=h, w=w))
+        report[f"segmenter_{h}x{w}"] = {k: v for k, v in r.items() if k != "id2label"}
+    for key in [k for k in report if k != "toolchain"]:
+        mp = onnx.load(str(resolve(cfg, report[key]["onnx"])))
         report[key]["inputs"] = [(i.name, [d.dim_value for d in i.type.tensor_type.shape.dim])
                                  for i in mp.graph.input]
         report[key]["outputs"] = [(o.name, [d.dim_value for d in o.type.tensor_type.shape.dim])

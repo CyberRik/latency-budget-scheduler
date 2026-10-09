@@ -62,6 +62,9 @@ def make_session(onnx_path: str, rt: dict, device: str = "cuda",
         providers = [("CUDAExecutionProvider", {
             "device_id": rt.get("device_id", 0),
             "cudnn_conv_algo_search": rt.get("cudnn_conv_algo_search", "EXHAUSTIVE"),
+            "arena_extend_strategy": rt.get("arena_extend_strategy", "kNextPowerOfTwo"),
+            "use_tf32": int(rt.get("use_tf32", True)),
+            "cudnn_conv_use_max_workspace": int(rt.get("cudnn_conv_use_max_workspace", True)),
         }), "CPUExecutionProvider"]
     else:
         providers = ["CPUExecutionProvider"]
@@ -121,19 +124,25 @@ class Letterbox:
     pad_y: float
 
 
+def letterbox_params(frame_hw, input_hw) -> tuple[Letterbox, int, int]:
+    """Letterbox geometry shared by the CPU path and the fused graph."""
+    H, W = input_hw
+    h, w = frame_hw
+    s = min(H / h, W / w)
+    nh, nw = round(h * s), round(w * s)
+    top, left = round((H - nh) / 2 - 0.1), round((W - nw) / 2 - 0.1)
+    return Letterbox(s, left, top), nh, nw
+
+
 def det_preprocess(bgr: np.ndarray, input_hw) -> tuple[np.ndarray, Letterbox]:
     """Ultralytics-style letterbox (pad value 114), RGB, [0,1], NCHW float32."""
     H, W = input_hw
-    h, w = bgr.shape[:2]
-    s = min(H / h, W / w)
-    nh, nw = round(h * s), round(w * s)
+    lb, nh, nw = letterbox_params(bgr.shape[:2], input_hw)
     resized = cv2.resize(bgr, (nw, nh), interpolation=cv2.INTER_LINEAR)
-    px, py = (W - nw) / 2, (H - nh) / 2
-    top, left = round(py - 0.1), round(px - 0.1)
     canvas = np.full((H, W, 3), 114, np.uint8)
-    canvas[top:top + nh, left:left + nw] = resized
+    canvas[lb.pad_y:lb.pad_y + nh, lb.pad_x:lb.pad_x + nw] = resized
     x = canvas[:, :, ::-1].transpose(2, 0, 1)[None].astype(np.float32) / 255.0
-    return np.ascontiguousarray(x), Letterbox(s, left, top)
+    return np.ascontiguousarray(x), lb
 
 
 def det_postprocess(out: np.ndarray, lb: Letterbox, score_thr: float, orig_hw) -> np.ndarray:

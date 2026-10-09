@@ -8,6 +8,8 @@ results_dir = "results"
 # BDD100K 10k val images (1280x720). These also have semantic-seg labels,
 # which Stage 5 needs for mIoU.
 frames_glob = "data/bdd100k/images/10k/val/*.jpg"
+frame_hw = [720, 1280]                 # all BDD100K frames; fused graphs are static
+seg_gt_dir = "data/bdd100k/labels/sem_seg/val"
 
 [runtime]
 device_id = 0
@@ -16,9 +18,14 @@ device_id = 0
 require_cuda = true
 cudnn_conv_algo_search = "EXHAUSTIVE"   # EXHAUSTIVE | HEURISTIC | DEFAULT
 graph_optimization = "all"              # disable | basic | extended | all
+# kSameAsRequested makes the BFC arena grow only by what is requested, so
+# device-memory deltas reflect real need rather than power-of-two rounding.
+arena_extend_strategy = "kSameAsRequested"
+use_tf32 = true                         # ORT CUDA EP default; Ampere TF32 convs/matmuls
 
 [models.detector]
 name = "yolov10n"
+task = "detection"
 weights = "yolov10n.pt"                 # ultralytics release asset
 onnx = "models/yolov10n_fp32.onnx"
 input_hw = [640, 640]
@@ -26,13 +33,76 @@ score_threshold = 0.25
 
 [models.segmenter]
 name = "segformer_b0_cityscapes"
+task = "segmentation"
 hf_id = "nvidia/segformer-b0-finetuned-cityscapes-512-1024"
 onnx = "models/segformer_b0_fp32.onnx"
 # 576x1024 keeps BDD's 16:9 aspect (1.778) and is divisible by 32.
 input_hw = [576, 1024]
+# Stage 2b resolution sweep (all divisible by 32, aspect 1.75-1.79).
+sweep_hw = [[576, 1024], [448, 800], [384, 672], [288, 512]]
+sweep_onnx = "models/segformer_b0_{h}x{w}_fp32.onnx"
+
+# ---- Stage 2b: fused variants (pre/post-processing inside the graph, on GPU).
+# Input: raw uint8 BGR frame [1,720,1280,3]. Built by scripts/build_fused.py.
+[models.detector_fused]
+name = "yolov10n_fused"
+task = "detection"
+fused = true
+source_onnx = "models/yolov10n_fp32.onnx"
+onnx = "models/yolov10n_fused_fp32.onnx"
+input_hw = [640, 640]
+score_threshold = 0.25
+
+[models.seg_fused_576x1024]
+name = "segformer_b0_fused_576x1024"
+task = "segmentation"
+fused = true
+source_onnx = "models/segformer_b0_576x1024_fp32.onnx"
+onnx = "models/segformer_b0_fused_576x1024_fp32.onnx"
+input_hw = [576, 1024]
+
+[models.seg_fused_448x800]
+name = "segformer_b0_fused_448x800"
+task = "segmentation"
+fused = true
+source_onnx = "models/segformer_b0_448x800_fp32.onnx"
+onnx = "models/segformer_b0_fused_448x800_fp32.onnx"
+input_hw = [448, 800]
+
+[models.seg_fused_384x672]
+name = "segformer_b0_fused_384x672"
+task = "segmentation"
+fused = true
+source_onnx = "models/segformer_b0_384x672_fp32.onnx"
+onnx = "models/segformer_b0_fused_384x672_fp32.onnx"
+input_hw = [384, 672]
+
+[models.seg_fused_288x512]
+name = "segformer_b0_fused_288x512"
+task = "segmentation"
+fused = true
+source_onnx = "models/segformer_b0_288x512_fp32.onnx"
+onnx = "models/segformer_b0_fused_288x512_fp32.onnx"
+input_hw = [288, 512]
 
 [export]
 opset = 17
+
+[harness]
+deadline_ms = 33.0
+preload_frames = 100        # decoded into RAM (1280x720x3 = 2.6 MiB each), cycled
+warmup_iters = 50           # closed-loop, discarded; first iteration reported as cold start
+measure_frames = 1000       # per run; p99 then rests on ~10 samples (CI reported)
+disable_gc = true           # Python GC paused during the timed loop
+telemetry_interval_ms = 100 # nvidia-smi sampling, separate process
+cooldown_s = 15             # idle between runs so runs start from similar GPU temperature
+bootstrap_resamples = 1000
+seed = 0
+
+[stage2]
+models = ["detector", "segmenter"]
+fps = [0, 30]               # 0 = closed loop (back-to-back, pure service time)
+out_dir = "results/stage2"
 
 [stage1]
 n_frames = 20

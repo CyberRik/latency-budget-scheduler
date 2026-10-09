@@ -1,0 +1,187 @@
+{
+ "segmenter": {
+  "model": "segformer_b0_cityscapes",
+  "input_hw": [
+   576,
+   1024
+  ],
+  "n_frames": 200,
+  "frames_from": "data/bdd100k/images/10k/val/*.jpg",
+  "excluded_frames": [
+   "80a9e37d-e4548ac1.jpg"
+  ],
+  "miou": 0.39726651320107065,
+  "per_class_iou": {
+   "road": 0.8676994583541505,
+   "sidewalk": 0.4525475421427278,
+   "building": 0.6689618432781991,
+   "wall": 0.16227839313381576,
+   "fence": 0.17194535490535495,
+   "pole": 0.38395033970908343,
+   "traffic light": 0.3462288755862187,
+   "traffic sign": 0.35355853615778987,
+   "vegetation": 0.7683838832790377,
+   "terrain": 0.3624778210239879,
+   "sky": 0.8846360672639205,
+   "person": 0.544314850620595,
+   "rider": 0.322373613591991,
+   "car": 0.7776323868238089,
+   "truck": 0.18011234962708308,
+   "bus": 0.07660522593417543,
+   "train": 0.0,
+   "motorcycle": 0.08898841971889089,
+   "bicycle": 0.13536878966951194
+  },
+  "pixel_acc": 0.8531456699595863,
+  "classes_present_in_gt": 19,
+  "eval_wall_s": 21.3
+ },
+ "seg_fused_576x1024": {
+  "model": "segformer_b0_fused_576x1024",
+  "input_hw": [
+   576,
+   1024
+  ],
+  "n_frames": 200,
+  "frames_from": "data/bdd100k/images/10k/val/*.jpg",
+  "excluded_frames": [
+   "80a9e37d-e4548ac1.jpg"
+  ],
+  "miou": 0.39763913093022163,
+  "per_class_iou": {
+   "road": 0.8673566094831235,
+   "sidewalk": 0.45325311059696194,
+   "building": 0.6733095187733936,
+   "wall": 0.17164252571346927,
+   "fence": 0.17106470930621615,
+   "pole": 0.38285370140551483,
+   "traffic light": 0.3479826008699565,
+   "traffic sign": 0.35119614166181296,
+   "vegetation": 0.7688692461055793,
+   "terrain": 0.36192196451287956,
+   "sky": 0.8849382172572853,
+   "person": 0.542705200213102,
+   "rider": 0.3214892470890482,
+   "car": 0.7772166915046335,
+   "truck": 0.1798237107314944,
+   "bus": 0.07933401671170752,
+   "train": 0.0,
+   "motorcycle": 0.08585656230324538,
+   "bicycle": 0.13432971343478733
+  },
+  "pixel_acc": 0.853731567505683,
+  "classes_present_in_gt": 19,
+  "eval_wall_s": 11.4
+ },
+ "seg_fused_448x800": {
+  "model": "segformer_b0_fused_448x800",
+  "input_hw": [
+   448,
+   800
+  ],
+  "n_frames": 200,
+  "frames_from": "data/bdd100k/images/10k/val/*.jpg",
+  "excluded_frames": [
+   "80a9e37d-e4548ac1.jpg"
+  ],
+  "miou": 0.3971990053241111,
+  "per_class_iou": {
+   "road": 0.8837499842429495,
+   "sidewalk": 0.4458989474197626,
+   "building": 0.7041396000334251,
+   "wall": 0.21130554910204621,
+   "fence": 0.1885571493099511,
+   "pole": 0.373831909136987,
+   "traffic light": 0.3081523565339425,
+   "traffic sign": 0.3018567190050125,
+   "vegetation": 0.7894762001309859,
+   "terrain": 0.37131410399122144,
+   "sky": 0.8872893348667703,
+   "person": 0.5389583476421786,
+   "rider": 0.32985777548677336,
+   "car": 0.7876229391802799,
+   "truck": 0.1932851195750243,
+   "bus": 0.09052197716447447,
+   "train": 0.0,
+   "motorcycle": 0.03434004474272931,
+   "bicycle": 0.10662304359359802
+  },
+  "pixel_acc": 0.8649279332052894,
+  "classes_present_in_gt": 19,
+  "eval_wall_s": 8.5
+ },
+ "seg_fused_384x672": {
+  "model": "segformer_b0_fused_384x672",
+  "input_hw": [
+   384,
+   672
+  ],
+  "n_frames": 200,
+  "frames_from": "data/bdd100k/images/10k/val/*.jpg",
+  "excluded_frames": [
+   "80a9e37d-e4548ac1.jpg"
+  ],
+  "miou": 0.3924166756712549,
+  "per_class_iou": {
+   "road": 0.88964099253999,
+   "sidewalk": 0.46156068460750815,
+   "building": 0.7114827465416363,
+   "wall": 0.20235356173122676,
+   "fence": 0.1737656831288136,
+   "pole": 0.3602666374870671,
+   "traffic light": 0.32423845735214085,
+   "traffic sign": 0.2803357994615582,
+   "vegetation": 0.7859915572751643,
+   "terrain": 0.38041873276371413,
+   "sky": 0.8864106479965803,
+   "person": 0.4965867045754694,
+   "rider": 0.31536931372035804,
+   "car": 0.7892266839244274,
+   "truck": 0.2074490494668536,
+   "bus": 0.05826829471389316,
+   "train": 0.0,
+   "motorcycle": 0.009809271740020192,
+   "bicycle": 0.12274201872742019
+  },
+  "pixel_acc": 0.8657469166443367,
+  "classes_present_in_gt": 19,
+  "eval_wall_s": 7.6
+ },
+ "seg_fused_288x512": {
+  "model": "segformer_b0_fused_288x512",
+  "input_hw": [
+   288,
+   512
+  ],
+  "n_frames": 200,
+  "frames_from": "data/bdd100k/images/10k/val/*.jpg",
+  "excluded_frames": [
+   "80a9e37d-e4548ac1.jpg"
+  ],
+  "miou": 0.37667208641028954,
+  "per_class_iou": {
+   "road": 0.8927736547718872,
+   "sidewalk": 0.4349462064097971,
+   "building": 0.7217779089694168,
+   "wall": 0.22309710759652668,
+   "fence": 0.16684981361996107,
+   "pole": 0.3205280787264916,
+   "traffic light": 0.2894716386887266,
+   "traffic sign": 0.23788502361776542,
+   "vegetation": 0.7751829571638955,
+   "terrain": 0.3636111102430257,
+   "sky": 0.8834032046793693,
+   "person": 0.40717572492660653,
+   "rider": 0.257345396884619,
+   "car": 0.7869317473456525,
+   "truck": 0.2735941968108309,
+   "bus": 0.04516631492847338,
+   "train": 0.0,
+   "motorcycle": 0.009755737583942145,
+   "bicycle": 0.06727381882851349
+  },
+  "pixel_acc": 0.8652063059906056,
+  "classes_present_in_gt": 19,
+  "eval_wall_s": 6.4
+ }
+}

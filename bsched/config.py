@@ -17,6 +17,14 @@ def load_config(path: str | Path | None = None) -> dict:
     return cfg
 
 
+def relpath(cfg: dict, p: str | Path) -> str:
+    """Path relative to the project root, for anything written into results."""
+    try:
+        return Path(p).resolve().relative_to(cfg["_root"]).as_posix()
+    except ValueError:
+        return str(p)
+
+
 def resolve(cfg: dict, rel: str) -> Path:
     """Resolve a config-relative path."""
     p = Path(rel)

@@ -25,8 +25,8 @@ import numpy as np
 import onnxruntime as ort
 
 from bsched.config import resolve
-from bsched.models import (det_postprocess, det_preprocess, make_session, seg_postprocess,
-                           seg_preprocess)
+from bsched.models import (det_postprocess, det_preprocess, letterbox_params, make_session,
+                           seg_postprocess, seg_preprocess)
 
 STAGES = ("pre", "h2d", "gpu", "d2h", "post")
 
@@ -42,6 +42,8 @@ class ModelRunner:
     def __init__(self, cfg: dict, role: str, cudart):
         self.role = role
         self.mcfg = cfg["models"][role]
+        self.task = self.mcfg["task"]                 # "detection" | "segmentation"
+        self.fused = bool(self.mcfg.get("fused"))     # raw uint8 frame in, GPU pre/post
         self.cudart = cudart
         rt = cfg["runtime"]
         self.device_id = rt.get("device_id", 0)
@@ -51,7 +53,8 @@ class ModelRunner:
         self.in_shape = [int(d) for d in inp.shape]
         self.out_names = [o.name for o in self.sess.get_outputs()]
 
-        self.x_dev = ort.OrtValue.ortvalue_from_shape_and_type(self.in_shape, np.float32, "cuda", self.device_id)
+        in_dtype = np.uint8 if self.fused else np.float32
+        self.x_dev = ort.OrtValue.ortvalue_from_shape_and_type(self.in_shape, in_dtype, "cuda", self.device_id)
         self.io = self.sess.io_binding()
         self.io.bind_ortvalue_input(self.in_name, self.x_dev)
         for name in self.out_names:
@@ -59,15 +62,22 @@ class ModelRunner:
 
     # ---- stage functions (kept separate so the scheduler can call them piecemeal)
     def preprocess(self, bgr: np.ndarray):
-        if self.role == "detector":
+        hw = bgr.shape[:2]
+        if self.fused:
+            # The graph does resize/normalise; only a zero-copy batch view here.
+            lb = letterbox_params(hw, self.mcfg["input_hw"])[0] if self.task == "detection" else None
+            return bgr[None], (lb, hw)
+        if self.task == "detection":
             x, lb = det_preprocess(bgr, self.mcfg["input_hw"])
-            return x, (lb, bgr.shape[:2])
-        return seg_preprocess(bgr, self.mcfg["input_hw"]), (None, bgr.shape[:2])
+            return x, (lb, hw)
+        return seg_preprocess(bgr, self.mcfg["input_hw"]), (None, hw)
 
     def postprocess(self, out: np.ndarray, meta):
         lb, hw = meta
-        if self.role == "detector":
+        if self.task == "detection":
             return det_postprocess(out, lb, self.mcfg["score_threshold"], hw)
+        if self.fused:
+            return out[0]                             # uint8 mask, already argmaxed on GPU
         return seg_postprocess(out, hw)
 
     def step(self, bgr: np.ndarray) -> tuple[object, StepTiming]:

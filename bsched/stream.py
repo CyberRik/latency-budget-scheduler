@@ -28,10 +28,15 @@ import numpy as np
 
 
 class FrameSource:
-    def __init__(self, pattern: str, n_preload: int, seed: int = 0):
+    def __init__(self, pattern: str, n_preload: int, seed: int = 0, frame_hw=(720, 1280)):
         paths = sorted(glob.glob(pattern))
         if not paths:
             raise FileNotFoundError(f"No frames match {pattern}")
+        # Drop frames that aren't frame_hw (BDD100K 10k-val has 2 portrait phone
+        # frames). This needs a header read per file, done once at startup.
+        self.excluded = [p for p in paths if cv2.imread(p, cv2.IMREAD_REDUCED_GRAYSCALE_8).shape[:2]
+                         != (frame_hw[0] // 8, frame_hw[1] // 8)]
+        paths = [p for p in paths if p not in set(self.excluded)]
         rng = np.random.default_rng(seed)
         pick = sorted(rng.choice(len(paths), size=min(n_preload, len(paths)), replace=False))
         self.paths = [paths[i] for i in pick]

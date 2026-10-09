@@ -1,0 +1,1080 @@
+{
+  "config": "E:\\my_stuff\\budget scheduler\\config.toml",
+  "frames_glob": "E:\\my_stuff\\budget scheduler\\data\\bdd100k\\images\\10k\\val\\*.jpg",
+  "n_frames": 20,
+  "env": {
+    "python": "3.13.3",
+    "os": "Windows-11-10.0.26220-SP0",
+    "onnxruntime": "1.24.4",
+    "available_providers": [
+      "TensorrtExecutionProvider",
+      "CUDAExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "session_providers": [
+      "CUDAExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+      "memory.total": "4096 MiB",
+      "driver_version": "566.07",
+      "clocks.max.sm": "2100 MHz",
+      "power.limit": "[N/A]"
+    }
+  },
+  "node_placement": {
+    "detector": {
+      "nodes_by_provider": {
+        "CUDAExecutionProvider": 236
+      },
+      "cpu_ops": {}
+    },
+    "segmenter": {
+      "nodes_by_provider": {
+        "CUDAExecutionProvider": 376
+      },
+      "cpu_ops": {}
+    }
+  },
+  "aggregate": {
+    "detector": {
+      "total_dets": 127,
+      "classes": {
+        "car": 97,
+        "truck": 11,
+        "traffic light": 9,
+        "person": 5,
+        "bus": 4,
+        "fire hydrant": 1
+      },
+      "all_finite": true,
+      "gpu_cpu_count_match_frames": 20
+    },
+    "segmenter": {
+      "pixel_fraction": {
+        "road": 0.2883,
+        "building": 0.1922,
+        "sky": 0.1915,
+        "vegetation": 0.1273,
+        "car": 0.1176,
+        "sidewalk": 0.0317,
+        "terrain": 0.0146,
+        "wall": 0.0118,
+        "fence": 0.0069,
+        "truck": 0.006,
+        "pole": 0.005,
+        "person": 0.0028,
+        "traffic sign": 0.0017,
+        "traffic light": 0.0008,
+        "train": 0.0007,
+        "bus": 0.0005,
+        "bicycle": 0.0004,
+        "rider": 0.0001,
+        "motorcycle": 0.0001
+      },
+      "all_finite": true,
+      "min_gpu_cpu_argmax_agreement": 0.9994845920138888,
+      "sanity_pixel_acc_vs_bdd_gt": {
+        "n_frames_with_gt": 20,
+        "mean": 0.8245805075497508
+      }
+    }
+  },
+  "per_frame": [
+    {
+      "frame": "7d06fefd-f7be05a6.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 8,
+        "classes": {
+          "car": 8
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 8,
+          "n_cpu": 8,
+          "matched": 8,
+          "unmatched": 0,
+          "min_iou": 0.9992131590843201,
+          "max_box_abs_diff_px": 0.0234375,
+          "max_score_abs_diff": 0.0007188320159912109,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "building": 0.4323,
+          "road": 0.2689,
+          "sky": 0.1493,
+          "car": 0.0904,
+          "vegetation": 0.0358
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.026452064514160156,
+          "argmax_agreement": 0.9996473524305556
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.9319672120729123
+      }
+    },
+    {
+      "frame": "7d128593-0ccfea4c.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 3,
+        "classes": {
+          "car": 3
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 3,
+          "n_cpu": 3,
+          "matched": 3,
+          "unmatched": 0,
+          "min_iou": 0.9998708963394165,
+          "max_box_abs_diff_px": 0.01171875,
+          "max_score_abs_diff": 0.0015360713005065918,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "road": 0.4384,
+          "vegetation": 0.2283,
+          "car": 0.1755,
+          "sidewalk": 0.0468,
+          "sky": 0.0416
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.020401716232299805,
+          "argmax_agreement": 0.9998914930555556
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.8802366143949053
+      }
+    },
+    {
+      "frame": "7d15b18b-1e0d6e3f.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 9,
+        "classes": {
+          "car": 8,
+          "traffic light": 1
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 9,
+          "n_cpu": 9,
+          "matched": 9,
+          "unmatched": 0,
+          "min_iou": 0.9994263052940369,
+          "max_box_abs_diff_px": 0.03399658203125,
+          "max_score_abs_diff": 0.0009014606475830078,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "building": 0.44,
+          "vegetation": 0.1788,
+          "car": 0.1534,
+          "road": 0.1521,
+          "sky": 0.0388
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.02045118808746338,
+          "argmax_agreement": 0.9999186197916666
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.8065590209726289
+      }
+    },
+    {
+      "frame": "7d209219-ccdc1a09.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 5,
+        "classes": {
+          "car": 5
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 5,
+          "n_cpu": 5,
+          "matched": 5,
+          "unmatched": 0,
+          "min_iou": 0.9995027184486389,
+          "max_box_abs_diff_px": 0.014862060546875,
+          "max_score_abs_diff": 0.0011138319969177246,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "road": 0.3535,
+          "vegetation": 0.2159,
+          "sky": 0.1453,
+          "car": 0.1205,
+          "building": 0.0992
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.022356033325195312,
+          "argmax_agreement": 0.9999186197916666
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.6940276168574819
+      }
+    },
+    {
+      "frame": "7d22891c-224788c0.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 3,
+        "classes": {
+          "truck": 2,
+          "car": 1
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 3,
+          "n_cpu": 3,
+          "matched": 3,
+          "unmatched": 0,
+          "min_iou": 0.9996106028556824,
+          "max_box_abs_diff_px": 0.035552978515625,
+          "max_score_abs_diff": 0.0008776187896728516,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "building": 0.5544,
+          "road": 0.2711,
+          "car": 0.0483,
+          "wall": 0.0457,
+          "fence": 0.0411
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.025104522705078125,
+          "argmax_agreement": 0.9996744791666666
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.6604381028938907
+      }
+    },
+    {
+      "frame": "7d2f7975-e0c1c5a7.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 7,
+        "classes": {
+          "car": 4,
+          "truck": 3
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 7,
+          "n_cpu": 7,
+          "matched": 7,
+          "unmatched": 0,
+          "min_iou": 0.999282717704773,
+          "max_box_abs_diff_px": 0.13421630859375,
+          "max_score_abs_diff": 0.0076239705085754395,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "car": 0.4755,
+          "building": 0.181,
+          "road": 0.1794,
+          "truck": 0.0891,
+          "fence": 0.0183
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.024333953857421875,
+          "argmax_agreement": 0.999755859375
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.5151455220979253
+      }
+    },
+    {
+      "frame": "7d35e395-ae41f911.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 2,
+        "classes": {
+          "bus": 1,
+          "truck": 1
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 2,
+          "n_cpu": 2,
+          "matched": 2,
+          "unmatched": 0,
+          "min_iou": 0.9998076558113098,
+          "max_box_abs_diff_px": 0.02099609375,
+          "max_score_abs_diff": 0.0015534758567810059,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "sky": 0.5232,
+          "road": 0.2366,
+          "vegetation": 0.0853,
+          "sidewalk": 0.0486,
+          "wall": 0.042
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.028125762939453125,
+          "argmax_agreement": 0.9999728732638888
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.8647934443045647
+      }
+    },
+    {
+      "frame": "7d4a9094-0455564b.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 9,
+        "classes": {
+          "car": 8,
+          "truck": 1
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 9,
+          "n_cpu": 9,
+          "matched": 9,
+          "unmatched": 0,
+          "min_iou": 0.9996727108955383,
+          "max_box_abs_diff_px": 0.00836181640625,
+          "max_score_abs_diff": 0.0018338561058044434,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "sky": 0.5102,
+          "road": 0.2233,
+          "building": 0.0858,
+          "car": 0.0719,
+          "vegetation": 0.0622
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.016809463500976562,
+          "argmax_agreement": 0.9998914930555556
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.9402847480586428
+      }
+    },
+    {
+      "frame": "7d5040af-1a6f933f.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 9,
+        "classes": {
+          "car": 9
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 9,
+          "n_cpu": 9,
+          "matched": 9,
+          "unmatched": 0,
+          "min_iou": 0.9993067383766174,
+          "max_box_abs_diff_px": 0.05743408203125,
+          "max_score_abs_diff": 0.005385935306549072,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "vegetation": 0.4613,
+          "road": 0.2805,
+          "sky": 0.1723,
+          "car": 0.0684,
+          "building": 0.0085
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.027036666870117188,
+          "argmax_agreement": 0.9999457465277778
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.9315051822404317
+      }
+    },
+    {
+      "frame": "7d6c1119-00000000.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 12,
+        "classes": {
+          "car": 11,
+          "person": 1
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 12,
+          "n_cpu": 12,
+          "matched": 12,
+          "unmatched": 0,
+          "min_iou": 0.999695897102356,
+          "max_box_abs_diff_px": 0.0125732421875,
+          "max_score_abs_diff": 0.001150667667388916,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "sky": 0.2734,
+          "road": 0.2687,
+          "car": 0.1992,
+          "building": 0.1917,
+          "wall": 0.0515
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.0194091796875,
+          "argmax_agreement": 0.9998372395833334
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.9519557748326727
+      }
+    },
+    {
+      "frame": "7d6eb8b3-208131ff.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 0,
+        "classes": {},
+        "gpu_vs_cpu": {
+          "n_gpu": 0,
+          "n_cpu": 0
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "road": 0.4612,
+          "sky": 0.2516,
+          "vegetation": 0.1478,
+          "sidewalk": 0.0964,
+          "wall": 0.0218
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.026260852813720703,
+          "argmax_agreement": 0.9994845920138888
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.6228050351263703
+      }
+    },
+    {
+      "frame": "7d83710e-4697c3b2.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 10,
+        "classes": {
+          "car": 10
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 10,
+          "n_cpu": 10,
+          "matched": 10,
+          "unmatched": 0,
+          "min_iou": 0.9996808767318726,
+          "max_box_abs_diff_px": 0.03173828125,
+          "max_score_abs_diff": 0.001959472894668579,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "road": 0.2689,
+          "building": 0.2014,
+          "sidewalk": 0.1732,
+          "car": 0.146,
+          "vegetation": 0.1
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.0277862548828125,
+          "argmax_agreement": 0.9998643663194444
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.8030006327923244
+      }
+    },
+    {
+      "frame": "7d89b471-5b76bdb4.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 7,
+        "classes": {
+          "car": 6,
+          "traffic light": 1
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 7,
+          "n_cpu": 7,
+          "matched": 7,
+          "unmatched": 0,
+          "min_iou": 0.9992066025733948,
+          "max_box_abs_diff_px": 0.014923095703125,
+          "max_score_abs_diff": 0.00046700239181518555,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "sky": 0.3406,
+          "building": 0.1954,
+          "road": 0.1635,
+          "car": 0.1198,
+          "sidewalk": 0.0852
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.02359771728515625,
+          "argmax_agreement": 0.9999728732638888
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.9403580905859601
+      }
+    },
+    {
+      "frame": "7d97d173-09388af3.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 0,
+        "classes": {},
+        "gpu_vs_cpu": {
+          "n_gpu": 0,
+          "n_cpu": 0
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "road": 0.3462,
+          "vegetation": 0.2893,
+          "sky": 0.1991,
+          "terrain": 0.147,
+          "sidewalk": 0.0099
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.024679183959960938,
+          "argmax_agreement": 1.0
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.9607706450691363
+      }
+    },
+    {
+      "frame": "7daa6479-67988f3f.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 7,
+        "classes": {
+          "car": 1,
+          "truck": 2,
+          "bus": 2,
+          "person": 2
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 7,
+          "n_cpu": 7,
+          "matched": 7,
+          "unmatched": 0,
+          "min_iou": 0.9997581243515015,
+          "max_box_abs_diff_px": 0.03045654296875,
+          "max_score_abs_diff": 0.0016724169254302979,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "building": 0.3796,
+          "road": 0.354,
+          "car": 0.2206,
+          "truck": 0.019,
+          "sidewalk": 0.012
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.032623291015625,
+          "argmax_agreement": 0.9999457465277778
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.5683498760666619
+      }
+    },
+    {
+      "frame": "7dc08598-f42e2015.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 12,
+        "classes": {
+          "car": 4,
+          "person": 1,
+          "truck": 1,
+          "traffic light": 5,
+          "bus": 1
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 12,
+          "n_cpu": 12,
+          "matched": 12,
+          "unmatched": 0,
+          "min_iou": 0.9994121193885803,
+          "max_box_abs_diff_px": 0.123291015625,
+          "max_score_abs_diff": 0.0017927289009094238,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "road": 0.3567,
+          "building": 0.3316,
+          "car": 0.1513,
+          "vegetation": 0.073,
+          "person": 0.038
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.021261215209960938,
+          "argmax_agreement": 0.9999728732638888
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.9140388591282717
+      }
+    },
+    {
+      "frame": "7dca6982-6971d025.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 0,
+        "classes": {},
+        "gpu_vs_cpu": {
+          "n_gpu": 0,
+          "n_cpu": 0
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "sky": 0.4134,
+          "road": 0.259,
+          "vegetation": 0.24,
+          "terrain": 0.0474,
+          "building": 0.0166
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.019359588623046875,
+          "argmax_agreement": 0.9999457465277778
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.9038861182696784
+      }
+    },
+    {
+      "frame": "7dd1669f-5a249967.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 12,
+        "classes": {
+          "person": 1,
+          "car": 9,
+          "traffic light": 2
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 12,
+          "n_cpu": 12,
+          "matched": 12,
+          "unmatched": 0,
+          "min_iou": 0.9990044832229614,
+          "max_box_abs_diff_px": 0.0179443359375,
+          "max_score_abs_diff": 0.0019773244857788086,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "road": 0.4275,
+          "building": 0.1917,
+          "car": 0.1672,
+          "sky": 0.0813,
+          "vegetation": 0.0767
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.02017974853515625,
+          "argmax_agreement": 0.9998372395833334
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.8162554489346703
+      }
+    },
+    {
+      "frame": "7de0a101-68335d0a.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 5,
+        "classes": {
+          "car": 4,
+          "truck": 1
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 5,
+          "n_cpu": 5,
+          "matched": 5,
+          "unmatched": 0,
+          "min_iou": 0.9985933899879456,
+          "max_box_abs_diff_px": 0.0555419921875,
+          "max_score_abs_diff": 0.001079559326171875,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "sky": 0.552,
+          "building": 0.2119,
+          "road": 0.0801,
+          "vegetation": 0.0561,
+          "car": 0.0521
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.02477741241455078,
+          "argmax_agreement": 0.9998914930555556
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.9549547198749814
+      }
+    },
+    {
+      "frame": "7de7130e-3d65b555.jpg",
+      "hw": [
+        720,
+        1280
+      ],
+      "detector": {
+        "raw_output_shape": [
+          1,
+          300,
+          6
+        ],
+        "finite": true,
+        "n_dets": 7,
+        "classes": {
+          "car": 6,
+          "fire hydrant": 1
+        },
+        "gpu_vs_cpu": {
+          "n_gpu": 7,
+          "n_cpu": 7,
+          "matched": 7,
+          "unmatched": 0,
+          "min_iou": 0.9994986653327942,
+          "max_box_abs_diff_px": 0.011260986328125,
+          "max_score_abs_diff": 0.0010463595390319824,
+          "classes_equal": true
+        }
+      },
+      "segmenter": {
+        "raw_output_shape": [
+          1,
+          19,
+          144,
+          256
+        ],
+        "finite": true,
+        "top_classes": {
+          "road": 0.3766,
+          "building": 0.2662,
+          "vegetation": 0.2307,
+          "car": 0.0778,
+          "sidewalk": 0.0267
+        },
+        "gpu_vs_cpu": {
+          "max_logit_abs_diff": 0.01811981201171875,
+          "argmax_agreement": 0.9999457465277778
+        },
+        "sanity_pixel_acc_vs_bdd_gt": 0.8302774864209028
+      }
+    }
+  ]
+}

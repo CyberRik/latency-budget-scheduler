@@ -1,0 +1,7 @@
+# Only needed for scripts/export_models.py (one-off model export). CPU torch is
+# sufficient. Install with:
+#   pip install -r requirements-export.txt --extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.7.1
+ultralytics==8.3.202
+transformers==5.12.1
+onnx==1.20.1

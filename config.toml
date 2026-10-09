@@ -1,0 +1,40 @@
+# Single source of truth for every stage. Paths are relative to this file.
+
+[paths]
+models_dir = "models"
+results_dir = "results"
+
+[data]
+# BDD100K 10k val images (1280x720). These also have semantic-seg labels,
+# which Stage 5 needs for mIoU.
+frames_glob = "data/bdd100k/images/10k/val/*.jpg"
+
+[runtime]
+device_id = 0
+# Fail session creation if the CUDA EP cannot be registered. ORT may still
+# place individual nodes on CPU; stage 1 reports per-node placement.
+require_cuda = true
+cudnn_conv_algo_search = "EXHAUSTIVE"   # EXHAUSTIVE | HEURISTIC | DEFAULT
+graph_optimization = "all"              # disable | basic | extended | all
+
+[models.detector]
+name = "yolov10n"
+weights = "yolov10n.pt"                 # ultralytics release asset
+onnx = "models/yolov10n_fp32.onnx"
+input_hw = [640, 640]
+score_threshold = 0.25
+
+[models.segmenter]
+name = "segformer_b0_cityscapes"
+hf_id = "nvidia/segformer-b0-finetuned-cityscapes-512-1024"
+onnx = "models/segformer_b0_fp32.onnx"
+# 576x1024 keeps BDD's 16:9 aspect (1.778) and is divisible by 32.
+input_hw = [576, 1024]
+
+[export]
+opset = 17
+
+[stage1]
+n_frames = 20
+n_visualize = 4
+out_dir = "results/stage1"

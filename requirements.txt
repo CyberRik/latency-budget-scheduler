@@ -1,0 +1,5 @@
+# Runtime (stages 1-5). CUDA 12 + cuDNN 9 come from the nvidia-* wheels pulled
+# in by the [cuda,cudnn] extra; no system CUDA toolkit is needed.
+onnxruntime-gpu[cuda,cudnn]==1.24.4
+numpy
+opencv-python-headless

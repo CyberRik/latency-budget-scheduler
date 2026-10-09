@@ -1,0 +1,95 @@
+{
+  "toolchain": {
+    "torch": "2.7.1+cpu",
+    "onnx": "1.20.1",
+    "ultralytics": "8.3.202",
+    "transformers": "5.12.1"
+  },
+  "detector": {
+    "model": "yolov10n",
+    "onnx": "E:\\my_stuff\\budget scheduler\\models\\yolov10n_fp32.onnx",
+    "source": "yolov10n.pt",
+    "inputs": [
+      [
+        "images",
+        [
+          1,
+          3,
+          640,
+          640
+        ]
+      ]
+    ],
+    "outputs": [
+      [
+        "output0",
+        [
+          1,
+          300,
+          6
+        ]
+      ]
+    ],
+    "opset": 17
+  },
+  "segmenter": {
+    "model": "segformer_b0_cityscapes",
+    "onnx": "E:\\my_stuff\\budget scheduler\\models\\segformer_b0_fp32.onnx",
+    "source": "nvidia/segformer-b0-finetuned-cityscapes-512-1024",
+    "num_labels": 19,
+    "id2label": {
+      "0": "road",
+      "1": "sidewalk",
+      "2": "building",
+      "3": "wall",
+      "4": "fence",
+      "5": "pole",
+      "6": "traffic light",
+      "7": "traffic sign",
+      "8": "vegetation",
+      "9": "terrain",
+      "10": "sky",
+      "11": "person",
+      "12": "rider",
+      "13": "car",
+      "14": "truck",
+      "15": "bus",
+      "16": "train",
+      "17": "motorcycle",
+      "18": "bicycle"
+    },
+    "torch_vs_onnx_cpu": {
+      "max_abs_diff": 1.33514404296875e-05,
+      "argmax_agreement": 1.0,
+      "output_shape": [
+        1,
+        19,
+        144,
+        256
+      ]
+    },
+    "inputs": [
+      [
+        "pixel_values",
+        [
+          1,
+          3,
+          576,
+          1024
+        ]
+      ]
+    ],
+    "outputs": [
+      [
+        "logits",
+        [
+          1,
+          19,
+          144,
+          256
+        ]
+      ]
+    ],
+    "opset": 17
+  }
+}

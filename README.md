@@ -10,8 +10,8 @@ Nothing is interpolated or estimated. Anything that could not be measured is
 listed as such.**
 
 Status: Stages 1 (setup/correctness), 2 (measurement harness + single-model
-baselines) and 2b (GPU-fused pipeline, segmentation resolution sweep) complete.
-Stage 3 (sequential contention) next.
+baselines), 2b (GPU-fused pipeline, segmentation resolution sweep) and 3
+(sequential contention) complete. Stage 4 (deadline-aware scheduler) next.
 
 ## Hardware and software this was measured on
 
@@ -46,11 +46,17 @@ bsched/
   stream.py              frame source + open-loop frame-stream driver
   gpu.py                 cudart sync/mem-info, nvidia-smi telemetry, system snapshot
   stats.py               percentiles + bootstrap CIs, deadline miss rate
+  metrics.py             detection matching, confusion matrix / mIoU
+  harness.py             multi-model per-frame pipeline harness with pluggable policy
   vis.py                 overlays
 scripts/export_models.py export both models to static-shape FP32 ONNX
 scripts/prepare_data.py  sort BDD100K archives by content, extract val splits
 scripts/verify_stage1.py stage-1 correctness check
-scripts/run_stage2.py    stage-2 single-model baselines
+scripts/run_stage2.py    stage-2 single-model baselines (also used for 2b)
+scripts/build_fused.py   wrap models with in-graph GPU pre/post-processing
+scripts/verify_fused.py  fused vs CPU-path equivalence
+scripts/eval_seg.py      segmentation mIoU on BDD100K val
+scripts/run_stage3.py    stage-3 sequential contention FPS sweep
 models/                  ONNX files + export_report.json
 data/                    archives/ (raw zips), bdd100k/ (extracted), manifest.json
 results/<stage>/         JSON results + visualisations
@@ -458,3 +464,119 @@ provider options, environment, memory, telemetry summary, summary stats and
 **per-frame arrays** (arrival offset, e2e, queue, service and each stage, in
 ms), so plots can be regenerated without re-running. The raw telemetry CSV
 sits next to it. `summary.json` / `summary.md` hold the cross-run table.
+
+## Stage 3: sequential contention
+
+### Method
+
+- **Pipelines:** `detector_fused` then a SegFormer rung, sequentially on every
+  frame. One pipeline per ladder rung: det+seg 384×672 and det+seg 288×512.
+  No scheduler and no frame dropping. This is the baseline Stage 4 is judged
+  against, so overload shows up as queue growth.
+- **Same harness as Stage 2** (`bsched/harness.py`, `SequentialPolicy`):
+  open-loop arrivals, sync-bracketed stages per model, fresh process per run,
+  warmup of the whole pipeline discarded, telemetry and system snapshots.
+- **Per frame:** *frame e2e* (arrival → last model done; the frame deadline),
+  *detection e2e* (arrival → detector done; detection's hard requirement),
+  *segmentation e2e*, queue time, and per-model stage times.
+- **Sweep:** closed loop, then 10–50 FPS in steps of 5; 1000 frames per run.
+- **3 repeats.** Within each repeat the FPS order is shuffled (seeded), so
+  GPU heat-up and time-of-run drift aren't confounded with FPS.
+- **Aggregation:** for each (pipeline, FPS), the median over repeats of each
+  run's percentile with [min, max] across repeats; miss rates pooled over all
+  3000 frames.
+- **Deadline crossing:** reported as a bracket of *tested* FPS values
+  (highest FPS whose median p99 ≤ 33 ms, lowest FPS above). It is not
+  interpolated, and the summary records whether all repeats agree at each FPS.
+
+- **Validity:** a run counts only if the laptop was on AC power at start and
+  end (`system_before` / `system_after`). `run_stage3.py` excludes any other
+  run automatically and lists it in the summary.
+
+### Stage 3 results (`results/stage3/summary.md`, 60 runs = 2 pipelines × 10 rates × 3 repeats)
+
+Median over 3 repeats [min, max], ms; miss rates pooled over 3000 frames.
+"det GPU / seg GPU" is the median per-model GPU stage time.
+
+| pipeline | FPS | achieved FPS | frame e2e p50 | frame e2e p99 | frame miss rate | det miss rate | det / seg GPU p50 | SM MHz |
+|---|---|---|---|---|---|---|---|---|
+| det + seg 384×672 | closed | 30.9 | 32.01 [29.24, 32.14] | 37.06 [36.47, 43.45] | 18.2% (547) | 0.03% (1) | 11.48 / 18.66 | 1737 |
+| | 10 | 10.0 | 42.86 [42.72, 42.95] | 46.98 [45.84, 47.52] | 98.9% (2967) | 0% | 13.86 / 27.03 | 916 |
+| | 15 | 15.0 | 31.14 [29.82, 31.37] | 37.41 [36.05, 44.12] | 12.0% (360) | 0% | 10.62 / 18.61 | 1719 |
+| | 20 | 20.0 | 31.33 [30.97, 31.39] | 37.52 [37.32, 38.72] | 8.3% (248) | 0.03% (1) | 10.83 / 18.55 | 1740 |
+| | 25 | 25.0 | 31.35 [29.19, 32.35] | 37.03 [36.74, 79.28] | 18.4% (551) | 1.7% (51) | 10.87 / 18.60 | 1740 |
+| | 30 | 30.0 | 31.73 [30.50, 32.85] | 49.88 [40.07, 84.02] | 23.4% (701) | 4.0% (121) | 11.17 / 18.60 | 1740 |
+| | 35 | 31.6 | 1510 [1284, 1733] | 3090 [2560, 4451] | 99.9% | 99.1% | 11.13 / 18.56 | 1738 |
+| | 40 | 31.8 | 3062 [2456, 3520] | 6395 [4627, 7048] | 99.9% | 99.6% | 11.03 / 18.60 | 1739 |
+| | 45 | 33.6 | 4014 [3781, 4973] | 7526 [7499, 9287] | 99.9% | 99.7% | 9.00 / 18.58 | 1736 |
+| | 50 | 31.5 | 5878 [5653, 6358] | 11668 [11201, 12371] | 99.9% | 99.8% | 11.16 / 18.60 | 1740 |
+| det + seg 288×512 | closed | 37.0 | 26.82 [26.67, 27.42] | 33.24 [31.82, 36.12] | 1.9% (56) | 0.03% (1) | 10.79 / 14.24 | 1740 |
+| | 10 | 10.0 | 42.68 [39.38, 43.06] | 46.50 [44.72, 48.91] | 96.7% (2900) | 0.3% (9) | 17.11 / 23.64 | 676 |
+| | 15 | 15.0 | 29.65 [29.52, 29.73] | 35.92 [35.75, 36.52] | 3.8% (114) | 0% | 11.55 / 16.12 | 1136 |
+| | 20 | 20.0 | 26.40 [26.31, 26.83] | 35.20 [32.44, 36.39] | 2.2% (66) | 0% | 10.46 / 14.04 | 1740 |
+| | 25 | 25.0 | 26.84 [26.44, 27.30] | 33.85 [30.78, 33.88] | 1.2% (36) | 0% | 10.72 / 14.24 | 1740 |
+| | 30 | 30.0 | 27.12 [26.69, 27.67] | 35.86 [34.23, 59.03] | 3.1% (94) | 0.6% (17) | 10.90 / 14.31 | 1740 |
+| | 35 | 35.0 | 27.45 [27.12, 27.50] | 97.97 [39.13, 126.39] | 9.4% (282) | 5.6% (167) | 10.97 / 14.36 | 1740 |
+| | 40 | 36.6 | 1349 [879, 1550] | 2351 [1706, 2927] | 99.7% | 99.2% | 10.91 / 14.34 | 1740 |
+| | 45 | 36.6 | 2523 [2237, 2729] | 5037 [4373, 5487] | 99.9% | 99.6% | 10.98 / 14.36 | 1740 |
+| | 50 | 36.2 | 3953 [3729, 4343] | 7523 [7388, 9914] | 99.9% | 99.6% | 11.03 / 14.48 | 1740 |
+
+Peak device memory during the run, minus the CUDA context (fresh process,
+repeat 1, closed loop): det + seg 384×672: 580 MiB; det + seg 288×512: 452 MiB.
+
+**Where p99 crosses 33 ms: it never goes below.** No tested rate gives a
+median frame-e2e p99 ≤ 33 ms for either pipeline, so there is no
+passing/failing bracket to report. The nearest case is det + seg 288×512 at
+25 FPS: 33.85 ms median, with 1 of 3 repeats at 30.78 ms. At 20 and 25 FPS the
+288×512 repeats fall on both sides of the deadline
+(`repeats_agree_at_each_fps: false`); everywhere else all repeats agree.
+
+What the sweep shows:
+
+1. **Capacity.** Closed loop, the sequential pipeline sustains 30.9 FPS
+   (384×672) and 37.0 FPS (288×512). Above that, frames queue without bound:
+   at 35 FPS (384) and 40 FPS (288) the median frame waits 1.3–1.5 s and every
+   later frame misses. Detection misses with it (99%), because it waits behind
+   the previous frame's segmentation. Sequential execution gives detection no
+   protection once the arrival rate exceeds the service rate.
+2. **Below capacity, the 33 ms deadline is tight for 384×672.** Median
+   service time (detector + segmenter, back to back) is 29–32 ms, so the
+   median frame finishes 1–4 ms before the deadline, and 8–23% of frames miss
+   at 15–30 FPS. At 288×512 the median service time is 26.3–27.6 ms and the
+   miss rate is 1.2–3.8% between 15 and 30 FPS.
+3. **Near capacity, misses spread to detection.** Occasional slow frames delay
+   the next arrival: at 30 FPS the 99th-percentile queue time is 1–26 ms
+   (288×512) and 7–51 ms (384×672), depending on the repeat. Detection misses
+   first appear there: 0.6% (288, 30 FPS) and 1.7–4.0% (384, 25–30 FPS).
+4. **Low rates are slower, not faster: GPU power management.** At 10 FPS the
+   GPU idles about 70 ms between frames, drops its SM clock (telemetry mean
+   676 MHz for 288×512 and 916 MHz for 384×672; `gpu_idle` set on ~97% of
+   samples), and each frame then runs at the low clock. Per-model GPU time
+   rises from 10.8 / 14.2 ms to 17.1 / 23.6 ms (288×512), and 97–99% of frames
+   miss. At 15 FPS the clock partly recovers (1136 / 1719 MHz). From 20 FPS
+   on, the clock holds at 1740 MHz throughout. So the miss rate against FPS is
+   U-shaped, not monotonic. Locking the clocks (`nvidia-smi -lgc`) needs
+   admin rights and was not tried, so its effect is not measured.
+5. **Repeat-to-repeat spread is large near the deadline.** For example,
+   384×672 at 25 FPS gives frame p99 of 36.7 / 79.3 / 37.0 ms. The 79.3 ms
+   repeat had a higher median service time (32.3 vs 29.2–31.4 ms), and its
+   queue built up. With 1000 frames per run, p99 rests on ~10 frames.
+
+**Excluded run.** One run (288×512, repeat 2, 45 FPS) was replaced: AC power
+was removed partway through it, and the GPU fell to P3 under a software power
+cap (SM clock down to 210 MHz). The original files and the evidence are in
+`results/stage3/invalid/` (see the README there). The replacement run was on AC
+power throughout, held 1740 MHz, and agrees with repeats 1 and 3.
+
+**What this sets for Stage 4.** Running both models every frame cannot meet
+33 ms reliably at any rate tested, and above about 31 / 37 FPS it makes
+detection miss too. A scheduler has to:
+
+- run detection first and protect it by not starting work that can't finish
+  in time;
+- choose the segmentation rung from the remaining budget (384×672 fits only
+  when the detector finishes early);
+- drop frames, or at least segmentation, under overload, instead of queueing
+  them;
+- cope with service times that vary with GPU clock state (point 4). The EWMA
+  estimate has to track this rather than assume one fixed latency.

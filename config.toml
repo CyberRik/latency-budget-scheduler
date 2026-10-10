@@ -104,6 +104,14 @@ models = ["detector", "segmenter"]
 fps = [0, 30]               # 0 = closed loop (back-to-back, pure service time)
 out_dir = "results/stage2"
 
+[stage3]
+# Both models on every frame, sequentially (detector first). One pipeline per
+# degrade-ladder rung.
+pipelines = [["detector_fused", "seg_fused_384x672"], ["detector_fused", "seg_fused_288x512"]]
+fps = [0, 10, 15, 20, 25, 30, 35, 40, 45, 50]   # 0 = closed loop
+repeats = 3
+out_dir = "results/stage3"
+
 [stage1]
 n_frames = 20
 n_visualize = 4

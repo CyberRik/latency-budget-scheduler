@@ -11,7 +11,8 @@ listed as such.**
 
 Status: Stages 1 (setup/correctness), 2 (measurement harness + single-model
 baselines), 2b (GPU-fused pipeline, segmentation resolution sweep) and 3
-(sequential contention) complete. Stage 4 (deadline-aware scheduler) next.
+(sequential contention) and 4 (deadline-aware scheduler) complete. Stage 5
+(INT8/FP16 variants, accuracy trade-off table) next.
 
 ## Hardware and software this was measured on
 
@@ -580,3 +581,135 @@ detection miss too. A scheduler has to:
   them;
 - cope with service times that vary with GPU clock state (point 4). The EWMA
   estimate has to track this rather than assume one fixed latency.
+
+## Stage 4: deadline-aware scheduler
+
+### Policy (`bsched/scheduler.py`, `[scheduler]` in config)
+
+Per frame, on the same single-thread harness as Stage 3:
+
+1. **Detection always runs first**, even when the frame is already late.
+2. **After detection, segmentation is picked from the remaining budget:** the
+   first rung of the ladder 384×672 → 288×512 whose latency estimate fits;
+   otherwise skip segmentation for this frame. The budget ends at the
+   earlier of:
+   - this frame's deadline, `arrival + 33 ms`;
+   - the latest time the next frame's detection can start and still meet its
+     own deadline, `arrival + period + 33 ms − est(detector)`. This keeps
+     segmentation from pushing the next detection past its deadline.
+3. **Latency estimate per model:** EWMA of the step wall time (pre + h2d +
+   gpu + d2h + post), plus K × EWMA of the absolute deviation. This is the
+   Jacobson/Karels TCP retransmission-timer estimator, with the RFC 6298
+   values α = 1/8, β = 1/4, K = 4, fixed before any Stage 4 run and not
+   tuned on the sweep. Estimates are seeded with 20 closed-loop runs per
+   model (discarded).
+4. **Probe for stale estimates** (`probe_after_frames = 30`). An estimate
+   updates only when its model runs. In a 200-frame smoke test (before any
+   evaluation run), one slow 288×512 frame inflated its deviation, its
+   estimate stayed above the budget, and segmentation never ran again for
+   the rest of the run. Fix: a rung that hasn't run for 30 frames may run
+   once if its EWMA *mean* (without the deviation margin) fits the budget.
+   Probes are logged.
+
+**Every decision is logged** per frame in the run JSON
+(`per_frame_decisions`): the segmentation budget, which bound applied, the
+estimate for each rung, the choice, and whether it was a probe.
+
+All three sessions (detector + both rungs) are loaded in one process: peak
+device memory minus context 940 MiB (closed loop, repeat 1).
+
+### Stage 4 results vs Stage 3 (`results/stage4/summary.md`)
+
+Same FPS sweep and seeds as Stage 3, 3 repeats × 1000 frames, all runs on
+AC power. Same per-frame definitions for both stages:
+
+- **frame miss:** some model that ran on the frame finished after 33 ms;
+- **seg on time:** a mask (any rung) finished within 33 ms;
+- **seg late:** segmentation ran and finished after 33 ms. For the
+  scheduler, that means it predicted a fit and was wrong.
+
+Rates are pooled over 3000 frames; p99 is the median over repeats [min, max].
+
+| FPS | policy | frame p99 (ms) | frame miss | det miss | det p99 (ms) | seg on time | seg 384 / 288 / skip | SM MHz |
+|---|---|---|---|---|---|---|---|---|
+| closed | **scheduler** | 32.60 [31.75, 33.04] | 0.6% | 0% | 16.17 | 70.7% | 1726 / 415 / 859 | 1731 |
+| | seq 384 | 37.06 [36.47, 43.45] | 18.2% | 0.03% | 15.91 | 81.8% | all 384 | 1737 |
+| | seq 288 | 33.24 [31.82, 36.12] | 1.9% | 0.03% | 15.65 | 98.1% | all 288 | 1740 |
+| 10 | **scheduler** | 46.37 [45.49, 48.14] | 83.2% | **82.9%** | 46.37 | 1.6% | 32 / 26 / 2942 | 628 |
+| | seq 384 | 46.98 [45.84, 47.52] | 98.9% | 0% | 18.66 | 1.1% | all 384 | 916 |
+| | seq 288 | 46.50 [44.72, 48.91] | 96.7% | 0.3% | 20.08 | 3.3% | all 288 | 676 |
+| 15 | **scheduler** | 41.65 [32.61, 43.34] | 1.5% | 1.0% | 41.65 | 24.9% | 397 / 366 / 2237 | 836 |
+| | seq 384 | 37.41 [36.05, 44.12] | 12.0% | 0% | 16.14 | 88.0% | all 384 | 1719 |
+| | seq 288 | 35.92 [35.75, 36.52] | 3.8% | 0% | 17.37 | 96.2% | all 288 | 1136 |
+| 20 | **scheduler** | 31.99 [31.81, 32.14] | 0.1% | 0% | 15.18 | 98.1% | 2897 / 49 / 54 | 1738 |
+| | seq 384 | 37.52 [37.32, 38.72] | 8.3% | 0.03% | 17.06 | 91.7% | all 384 | 1740 |
+| | seq 288 | 35.20 [32.44, 36.39] | 2.2% | 0% | 17.65 | 97.8% | all 288 | 1740 |
+| 25 | **scheduler** | 32.69 [32.07, 33.97] | 0.8% | 0% | 18.49 | 76.5% | 2110 / 210 / 680 | 1731 |
+| | seq 384 | 37.03 [36.74, 79.28] | 18.4% | 1.7% | 16.86 | 81.6% | all 384 | 1740 |
+| | seq 288 | 33.85 [30.78, 33.88] | 1.2% | 0% | 16.43 | 98.8% | all 288 | 1740 |
+| 30 | **scheduler** | 32.31 [31.49, 32.56] | 0.5% | 0% | 17.77 | 91.2% | 2408 / 343 / 249 | 1732 |
+| | seq 384 | 49.88 [40.07, 84.02] | 23.4% | 4.0% | 30.41 | 76.6% | all 384 | 1740 |
+| | seq 288 | 35.86 [34.23, 59.03] | 3.1% | 0.6% | 18.53 | 96.9% | all 288 | 1740 |
+| 35 | **scheduler** | 32.69 [32.62, 32.74] | 0.3% | 0.1% | 15.62 | 93.5% | 2241 / 572 / 187 | 1733 |
+| | seq 384 | 3090 [2560, 4451] | 99.9% | 99.1% | 3070 | 0.1% | all 384 | 1738 |
+| | seq 288 | 97.97 [39.13, 126.39] | 9.4% | 5.6% | 82.89 | 90.6% | all 288 | 1740 |
+| 40 | **scheduler** | 32.76 [32.59, 33.32] | 0.8% | 0.3% | 20.61 | 56.4% | 846 / 862 / 1292 | 1739 |
+| | seq 288 | 2351 [1706, 2927] | 99.7% | 99.2% | 2337 | 0.3% | all 288 | 1740 |
+| 45 | **scheduler** | 32.42 [32.39, 32.58] | 0.4% | 0.1% | 23.06 | 53.8% | 1001 / 622 / 1377 | 1734 |
+| | seq 288 | 5037 [4373, 5487] | 99.9% | 99.6% | 5022 | 0.1% | all 288 | 1740 |
+| 50 | **scheduler** | 32.37 [32.36, 32.58] | 0.2% | 0% | 23.54 | 45.9% | 1153 / 231 / 1616 | 1732 |
+| | seq 288 | 7523 [7388, 9914] | 99.9% | 99.6% | 7507 | 0.1% | all 288 | 1740 |
+
+(Sequential 384×672 rows at 40–50 FPS are omitted here: they're 99.9%
+frame misses, as at 35 FPS. All rows are in `summary.md`.)
+
+What the comparison shows:
+
+1. **From 20 to 50 FPS the scheduler does what it was designed to do.** The
+   median frame p99 stays at or under 33 ms (worst single repeat 33.97 ms,
+   at 25 FPS), the frame miss rate is 0.1–0.8%, and detection misses 13 of
+   21 000 frames. Sequential execution collapses above its capacity (35+ FPS),
+   with queues of seconds; the scheduler doesn't queue, because it sheds
+   segmentation instead. Frame misses are almost all mispredictions
+   (`seg late`: 4–25 per 3000 frames).
+2. **The price is segmentation coverage and resolution.** At 20–35 FPS the
+   scheduler delivers an on-time mask on 76–98% of frames, mostly at 384×672.
+   At 40–50 FPS that falls to 46–56%, split between rungs. Below capacity,
+   *always running 288×512* gets more masks on time (96–99% at 15–30 FPS),
+   at the lower resolution and with 1–3% frame misses and up to 0.6%
+   detection misses. Stage 5's mIoU per rung will put a number on that
+   trade.
+3. **At 10–15 FPS the scheduler is worse than sequential, including for
+   detection.** At 10 FPS, 82.9% of detections miss (sequential: 0–0.3%); at
+   15 FPS, 1.0% (sequential: 0%). The cause is the GPU clocks, not the
+   policy's arithmetic:
+   - The detector's GPU time at 10 FPS is 41 ms median at a 628 MHz mean SM
+     clock, against about 9–11 ms at 1740 MHz.
+   - The feedback loop: shedding segmentation leaves the GPU idle longer, the
+     driver lowers the clocks, everything runs slower, the estimates rise,
+     and more segmentation is shed.
+   - The same loop shows up at higher rates in single repeats: 25 FPS
+     repeat 3 skipped 568 of 1000 with a 1378 MHz mean, and closed-loop
+     repeat 1 skipped 718.
+
+   Which models run can't fix the clock state. Possible fixes (pinned
+   clocks, the driver's "prefer maximum performance" power mode, or filler
+   work to keep the GPU busy) were not tried here, so their effect is not
+   measured.
+4. **Behaviour varies a lot between repeats.** Skips per 1000 frames at
+   the same FPS ranged 46–718 (closed loop), 47–568 (25 FPS) and 5–117
+   (35 FPS). The EWMA + 4×deviation margin is conservative: after a slow
+   frame, a rung can stay locked out until its probe (every 30 frames)
+   brings the deviation back down.
+5. **Near detector-only capacity, the next-frame bound starts to apply.** At
+   40–50 FPS the period (20–25 ms) is shorter than detector + segmentation.
+   The next arrival then waits behind segmentation (queue p99 8–13 ms), and
+   detection p99 rises to 21–24 ms, still inside the deadline. The
+   next-frame bound was the tighter one on 1–112 frames per run there.
+
+**Detector GPU time is bimodal across runs.** At full clocks, per-run
+detector GPU p50 is either about 9.0 ms or about 10.4–12.2 ms. Both groups
+occur in Stage 3 (6 vs 45 runs) and Stage 4 (17 vs 6 runs). The cause is not
+established; per-process cuDNN algorithm search (`EXHAUSTIVE`) is a
+candidate that was not tested. It feeds into the scheduler's estimates and
+into the sequential service time.

@@ -112,6 +112,25 @@ fps = [0, 10, 15, 20, 25, 30, 35, 40, 45, 50]   # 0 = closed loop
 repeats = 3
 out_dir = "results/stage3"
 
+[scheduler]
+# Stage 4 deadline-aware policy (bsched/scheduler.py). Fixed before any
+# Stage 4 run at the RFC 6298 (TCP retransmission timer) values; not tuned on
+# the evaluation sweep.
+ewma_alpha = 0.125          # weight of a new sample in the mean
+ewma_beta = 0.25            # weight of a new sample in the absolute deviation
+k_dev = 4.0                 # estimate = mean + k_dev * deviation
+seed_iters = 20             # closed-loop runs per model to seed the estimates (discarded)
+# Not from the RFC; set after a 200-frame smoke test showed starvation (see
+# bsched/scheduler.py), before any evaluation run. ~1 s at 30 FPS.
+probe_after_frames = 30     # a rung idle this long runs once if its EWMA mean fits
+
+[stage4]
+detector = "detector_fused"
+ladder = ["seg_fused_384x672", "seg_fused_288x512"]   # best quality first; then skip
+fps = [0, 10, 15, 20, 25, 30, 35, 40, 45, 50]          # same as Stage 3
+repeats = 3
+out_dir = "results/stage4"
+
 [stage1]
 n_frames = 20
 n_visualize = 4

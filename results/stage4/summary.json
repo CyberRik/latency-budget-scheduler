@@ -1,0 +1,1396 @@
+{
+ "deadline_ms": 33.0,
+ "rows": [
+  {
+   "fps": "closed",
+   "scheduler": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     37.15824986292972,
+     34.63317119975858,
+     53.40183521387718
+    ],
+    "frame_e2e_p50": [
+     29.184849999999997,
+     14.68235,
+     29.27505
+    ],
+    "frame_e2e_p99": [
+     32.595929,
+     31.7486,
+     33.04312899999999
+    ],
+    "det_e2e_p99": [
+     16.165491999999997,
+     15.878479999999994,
+     19.82411899999999
+    ],
+    "det_miss_rate": 0.0,
+    "det_misses": 0,
+    "frame_miss_rate": 0.006333333333333333,
+    "frame_misses": 19,
+    "seg_on_time_rate": 0.7073333333333334,
+    "seg_on_time": 2122,
+    "seg_late": 19,
+    "seg_skipped": 859,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 1726,
+     "seg_fused_288x512": 415
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 1717,
+     "seg_fused_288x512": 405
+    },
+    "sm_clock_mean_mhz": [
+     1731.2857142857142,
+     1727.8659003831417,
+     1737.2130177514794
+    ],
+    "budget_binding_counts": {
+     "own_deadline": 3000,
+     "next_frame_detection": 0
+    },
+    "det_started_late": 4
+   },
+   "sequential seg_fused_384x672": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     30.872278826271028,
+     30.426902186549306,
+     33.547720600962464
+    ],
+    "frame_e2e_p50": [
+     32.00815,
+     29.237299999999998,
+     32.1366
+    ],
+    "frame_e2e_p99": [
+     37.055721999999996,
+     36.474503,
+     43.452396
+    ],
+    "det_e2e_p99": [
+     15.911715999999998,
+     15.52385,
+     18.793336999999998
+    ],
+    "det_miss_rate": 0.0003333333333333333,
+    "det_misses": 1,
+    "frame_miss_rate": 0.18233333333333332,
+    "frame_misses": 547,
+    "seg_on_time_rate": 0.8176666666666667,
+    "seg_on_time": 2453,
+    "seg_late": 547,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 2453
+    },
+    "sm_clock_mean_mhz": [
+     1737.1058020477815,
+     1735.824915824916,
+     1740.1172161172162
+    ]
+   },
+   "sequential seg_fused_288x512": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     37.01897986419595,
+     36.235008408442404,
+     37.08830309949879
+    ],
+    "frame_e2e_p50": [
+     26.82365,
+     26.6659,
+     27.42485
+    ],
+    "frame_e2e_p99": [
+     33.242281,
+     31.817329999999995,
+     36.11652199999999
+    ],
+    "det_e2e_p99": [
+     15.645132999999998,
+     14.735977999999996,
+     17.437326
+    ],
+    "det_miss_rate": 0.0003333333333333333,
+    "det_misses": 1,
+    "frame_miss_rate": 0.018666666666666668,
+    "frame_misses": 56,
+    "seg_on_time_rate": 0.9813333333333333,
+    "seg_on_time": 2944,
+    "seg_late": 56,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_288x512": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_288x512": 2944
+    },
+    "sm_clock_mean_mhz": [
+     1740.0,
+     1734.1052631578948,
+     1740.0
+    ]
+   }
+  },
+  {
+   "fps": 10,
+   "scheduler": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     10.005728089222245,
+     10.005701749141748,
+     10.005828985728098
+    ],
+    "frame_e2e_p50": [
+     42.26215,
+     42.1482,
+     42.63525
+    ],
+    "frame_e2e_p99": [
+     46.368442,
+     45.493356,
+     48.139661000000004
+    ],
+    "det_e2e_p99": [
+     46.368442,
+     45.493356,
+     48.139661000000004
+    ],
+    "det_miss_rate": 0.8286666666666667,
+    "det_misses": 2486,
+    "frame_miss_rate": 0.832,
+    "frame_misses": 2496,
+    "seg_on_time_rate": 0.016,
+    "seg_on_time": 48,
+    "seg_late": 10,
+    "seg_skipped": 2942,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 32,
+     "seg_fused_288x512": 26
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 30,
+     "seg_fused_288x512": 18
+    },
+    "sm_clock_mean_mhz": [
+     627.5088888888889,
+     622.2916666666666,
+     642.7168338907469
+    ],
+    "budget_binding_counts": {
+     "own_deadline": 2999,
+     "next_frame_detection": 1
+    },
+    "det_started_late": 2802
+   },
+   "sequential seg_fused_384x672": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     10.005735537753628,
+     10.00564929965673,
+     10.005841230004936
+    ],
+    "frame_e2e_p50": [
+     42.8561,
+     42.72005,
+     42.95
+    ],
+    "frame_e2e_p99": [
+     46.980397,
+     45.843242,
+     47.51848
+    ],
+    "det_e2e_p99": [
+     18.656249999999996,
+     17.549868,
+     18.778163
+    ],
+    "det_miss_rate": 0.0,
+    "det_misses": 0,
+    "frame_miss_rate": 0.989,
+    "frame_misses": 2967,
+    "seg_on_time_rate": 0.011,
+    "seg_on_time": 33,
+    "seg_late": 2967,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 33
+    },
+    "sm_clock_mean_mhz": [
+     915.7372505543237,
+     906.2824175824176,
+     919.062706270627
+    ]
+   },
+   "sequential seg_fused_288x512": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     10.005684519540402,
+     10.005657829293124,
+     10.006130425909651
+    ],
+    "frame_e2e_p50": [
+     42.679550000000006,
+     39.381150000000005,
+     43.0567
+    ],
+    "frame_e2e_p99": [
+     46.498833999999995,
+     44.724074,
+     48.908410999999994
+    ],
+    "det_e2e_p99": [
+     20.084846000000002,
+     20.046391,
+     21.000699999999995
+    ],
+    "det_miss_rate": 0.003,
+    "det_misses": 9,
+    "frame_miss_rate": 0.9666666666666667,
+    "frame_misses": 2900,
+    "seg_on_time_rate": 0.03333333333333333,
+    "seg_on_time": 100,
+    "seg_late": 2900,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_288x512": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_288x512": 100
+    },
+    "sm_clock_mean_mhz": [
+     675.8691275167786,
+     667.2111111111111,
+     809.4796479647965
+    ]
+   }
+  },
+  {
+   "fps": 15,
+   "scheduler": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     15.008603411750924,
+     15.008539844162788,
+     15.009319429022016
+    ],
+    "frame_e2e_p50": [
+     27.3648625,
+     26.654127000000003,
+     27.979456
+    ],
+    "frame_e2e_p99": [
+     41.65125509,
+     32.607573620000004,
+     43.336762669999985
+    ],
+    "det_e2e_p99": [
+     41.65125509,
+     28.54677977,
+     43.336762669999985
+    ],
+    "det_miss_rate": 0.01,
+    "det_misses": 30,
+    "frame_miss_rate": 0.015333333333333332,
+    "frame_misses": 46,
+    "seg_on_time_rate": 0.249,
+    "seg_on_time": 747,
+    "seg_late": 16,
+    "seg_skipped": 2237,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 397,
+     "seg_fused_288x512": 366
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 390,
+     "seg_fused_288x512": 357
+    },
+    "sm_clock_mean_mhz": [
+     835.7438016528926,
+     511.5559265442404,
+     915.5155482815057
+    ],
+    "budget_binding_counts": {
+     "own_deadline": 2940,
+     "next_frame_detection": 60
+    },
+    "det_started_late": 139
+   },
+   "sequential seg_fused_384x672": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     15.008022515923852,
+     15.006675111653077,
+     15.008323195811347
+    ],
+    "frame_e2e_p50": [
+     31.141505000000002,
+     29.816555,
+     31.3730475
+    ],
+    "frame_e2e_p99": [
+     37.41472923999999,
+     36.0498774,
+     44.117039319999996
+    ],
+    "det_e2e_p99": [
+     16.14327213,
+     15.966494329999998,
+     20.42805767
+    ],
+    "det_miss_rate": 0.0,
+    "det_misses": 0,
+    "frame_miss_rate": 0.12,
+    "frame_misses": 360,
+    "seg_on_time_rate": 0.88,
+    "seg_on_time": 2640,
+    "seg_late": 360,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 2640
+    },
+    "sm_clock_mean_mhz": [
+     1719.323383084577,
+     1719.1463815789473,
+     1721.775
+    ]
+   },
+   "sequential seg_fused_288x512": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     15.008344369319143,
+     15.008208139113362,
+     15.008992059746404
+    ],
+    "frame_e2e_p50": [
+     29.649044500000002,
+     29.515926999999998,
+     29.727307
+    ],
+    "frame_e2e_p99": [
+     35.92389769,
+     35.75089865,
+     36.51549839
+    ],
+    "det_e2e_p99": [
+     17.372018969999996,
+     16.572621979999997,
+     17.531690509999997
+    ],
+    "det_miss_rate": 0.0,
+    "det_misses": 0,
+    "frame_miss_rate": 0.038,
+    "frame_misses": 114,
+    "seg_on_time_rate": 0.962,
+    "seg_on_time": 2886,
+    "seg_late": 114,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_288x512": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_288x512": 2886
+    },
+    "sm_clock_mean_mhz": [
+     1135.5930807248765,
+     1127.6516666666666,
+     1167.2892561983472
+    ]
+   }
+  },
+  {
+   "fps": 20,
+   "scheduler": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     20.008177582276005,
+     20.007744077376124,
+     20.014257877112044
+    ],
+    "frame_e2e_p50": [
+     29.344,
+     29.340249999999997,
+     29.368
+    ],
+    "frame_e2e_p99": [
+     31.992579,
+     31.807844999999997,
+     32.140296
+    ],
+    "det_e2e_p99": [
+     15.179968999999994,
+     15.059917,
+     17.981039999999997
+    ],
+    "det_miss_rate": 0.0,
+    "det_misses": 0,
+    "frame_miss_rate": 0.0013333333333333333,
+    "frame_misses": 4,
+    "seg_on_time_rate": 0.9806666666666667,
+    "seg_on_time": 2942,
+    "seg_late": 4,
+    "seg_skipped": 54,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 2897,
+     "seg_fused_288x512": 49
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 2896,
+     "seg_fused_288x512": 46
+    },
+    "sm_clock_mean_mhz": [
+     1738.2439024390244,
+     1731.5287610619469,
+     1739.9336283185842
+    ],
+    "budget_binding_counts": {
+     "own_deadline": 3000,
+     "next_frame_detection": 0
+    },
+    "det_started_late": 0
+   },
+   "sequential seg_fused_384x672": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     20.007403179339224,
+     20.007363109771656,
+     20.00747379183494
+    ],
+    "frame_e2e_p50": [
+     31.33095,
+     30.96815,
+     31.39435
+    ],
+    "frame_e2e_p99": [
+     37.516068999999995,
+     37.322808,
+     38.724028
+    ],
+    "det_e2e_p99": [
+     17.064491,
+     16.584763999999996,
+     18.538847999999998
+    ],
+    "det_miss_rate": 0.0003333333333333333,
+    "det_misses": 1,
+    "frame_miss_rate": 0.08266666666666667,
+    "frame_misses": 248,
+    "seg_on_time_rate": 0.9173333333333333,
+    "seg_on_time": 2752,
+    "seg_late": 248,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 2752
+    },
+    "sm_clock_mean_mhz": [
+     1740.0,
+     1740.0,
+     1740.0
+    ]
+   },
+   "sequential seg_fused_288x512": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     20.009691253745544,
+     20.009640124361272,
+     20.010062580230098
+    ],
+    "frame_e2e_p50": [
+     26.399299999999997,
+     26.30615,
+     26.826549999999997
+    ],
+    "frame_e2e_p99": [
+     35.197905,
+     32.43953,
+     36.393648999999996
+    ],
+    "det_e2e_p99": [
+     17.653684,
+     15.367918,
+     17.939757
+    ],
+    "det_miss_rate": 0.0,
+    "det_misses": 0,
+    "frame_miss_rate": 0.022,
+    "frame_misses": 66,
+    "seg_on_time_rate": 0.978,
+    "seg_on_time": 2934,
+    "seg_late": 66,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_288x512": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_288x512": 2934
+    },
+    "sm_clock_mean_mhz": [
+     1739.929046563193,
+     1739.9288888888889,
+     1740.0
+    ]
+   }
+  },
+  {
+   "fps": 25,
+   "scheduler": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     25.016190541058652,
+     25.006355302684288,
+     25.016923510959
+    ],
+    "frame_e2e_p50": [
+     29.637549999999997,
+     15.52455,
+     30.78245
+    ],
+    "frame_e2e_p99": [
+     32.693147,
+     32.073745,
+     33.970451000000004
+    ],
+    "det_e2e_p99": [
+     18.486756,
+     17.326512999999995,
+     19.827120999999998
+    ],
+    "det_miss_rate": 0.0,
+    "det_misses": 0,
+    "frame_miss_rate": 0.008333333333333333,
+    "frame_misses": 25,
+    "seg_on_time_rate": 0.765,
+    "seg_on_time": 2295,
+    "seg_late": 25,
+    "seg_skipped": 680,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 2110,
+     "seg_fused_288x512": 210
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 2101,
+     "seg_fused_288x512": 194
+    },
+    "sm_clock_mean_mhz": [
+     1731.1612021857923,
+     1377.958904109589,
+     1740.0
+    ],
+    "budget_binding_counts": {
+     "own_deadline": 3000,
+     "next_frame_detection": 0
+    },
+    "det_started_late": 3
+   },
+   "sequential seg_fused_384x672": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     25.00614488501332,
+     25.005072716589332,
+     25.006752385796094
+    ],
+    "frame_e2e_p50": [
+     31.3541,
+     29.1918,
+     32.3459
+    ],
+    "frame_e2e_p99": [
+     37.034412,
+     36.74152699999999,
+     79.280819
+    ],
+    "det_e2e_p99": [
+     16.862558,
+     16.600389999999997,
+     57.447466
+    ],
+    "det_miss_rate": 0.017,
+    "det_misses": 51,
+    "frame_miss_rate": 0.18366666666666667,
+    "frame_misses": 551,
+    "seg_on_time_rate": 0.8163333333333334,
+    "seg_on_time": 2449,
+    "seg_late": 551,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 2449
+    },
+    "sm_clock_mean_mhz": [
+     1740.0,
+     1737.185595567867,
+     1741.1092896174864
+    ]
+   },
+   "sequential seg_fused_288x512": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     25.007163989821898,
+     25.00575782579697,
+     25.008887283229406
+    ],
+    "frame_e2e_p50": [
+     26.84335,
+     26.44465,
+     27.3036
+    ],
+    "frame_e2e_p99": [
+     33.854821,
+     30.776621,
+     33.876602999999996
+    ],
+    "det_e2e_p99": [
+     16.425255,
+     14.299028999999999,
+     17.503732999999997
+    ],
+    "det_miss_rate": 0.0,
+    "det_misses": 0,
+    "frame_miss_rate": 0.012,
+    "frame_misses": 36,
+    "seg_on_time_rate": 0.988,
+    "seg_on_time": 2964,
+    "seg_late": 36,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_288x512": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_288x512": 2964
+    },
+    "sm_clock_mean_mhz": [
+     1740.0,
+     1740.0,
+     1740.0
+    ]
+   }
+  },
+  {
+   "fps": 30,
+   "scheduler": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     30.00343563340751,
+     30.002422485598753,
+     30.003788788436836
+    ],
+    "frame_e2e_p50": [
+     29.255634,
+     29.2415155,
+     29.756708500000002
+    ],
+    "frame_e2e_p99": [
+     32.31381194,
+     31.491117439999996,
+     32.56292334
+    ],
+    "det_e2e_p99": [
+     17.769220589999996,
+     16.900495739999997,
+     18.832810789999996
+    ],
+    "det_miss_rate": 0.0,
+    "det_misses": 0,
+    "frame_miss_rate": 0.005,
+    "frame_misses": 15,
+    "seg_on_time_rate": 0.912,
+    "seg_on_time": 2736,
+    "seg_late": 15,
+    "seg_skipped": 249,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 2408,
+     "seg_fused_288x512": 343
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 2400,
+     "seg_fused_288x512": 336
+    },
+    "sm_clock_mean_mhz": [
+     1731.6633663366338,
+     1722.3245033112582,
+     1732.924836601307
+    ],
+    "budget_binding_counts": {
+     "own_deadline": 3000,
+     "next_frame_detection": 0
+    },
+    "det_started_late": 0
+   },
+   "sequential seg_fused_384x672": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     30.002376218198858,
+     30.00228773444433,
+     30.00278740896423
+    ],
+    "frame_e2e_p50": [
+     31.726281,
+     30.4973625,
+     32.846503999999996
+    ],
+    "frame_e2e_p99": [
+     49.87642432999999,
+     40.074399989999996,
+     84.01843532999999
+    ],
+    "det_e2e_p99": [
+     30.411038299999994,
+     20.515604989999993,
+     64.28165933
+    ],
+    "det_miss_rate": 0.04033333333333333,
+    "det_misses": 121,
+    "frame_miss_rate": 0.23366666666666666,
+    "frame_misses": 701,
+    "seg_on_time_rate": 0.7663333333333333,
+    "seg_on_time": 2299,
+    "seg_late": 701,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 2299
+    },
+    "sm_clock_mean_mhz": [
+     1739.6445182724253,
+     1735.5263157894738,
+     1739.9739413680782
+    ]
+   },
+   "sequential seg_fused_288x512": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     30.00604609826462,
+     30.00536904071467,
+     30.00670742931838
+    ],
+    "frame_e2e_p50": [
+     27.117548,
+     26.6903215,
+     27.671837
+    ],
+    "frame_e2e_p99": [
+     35.86481628999999,
+     34.232342679999995,
+     59.03499065
+    ],
+    "det_e2e_p99": [
+     18.530523879999986,
+     16.47756634,
+     42.076413329999994
+    ],
+    "det_miss_rate": 0.005666666666666667,
+    "det_misses": 17,
+    "frame_miss_rate": 0.03133333333333333,
+    "frame_misses": 94,
+    "seg_on_time_rate": 0.9686666666666667,
+    "seg_on_time": 2906,
+    "seg_late": 94,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_288x512": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_288x512": 2906
+    },
+    "sm_clock_mean_mhz": [
+     1740.0,
+     1735.7105263157894,
+     1740.0
+    ]
+   }
+  },
+  {
+   "fps": 35,
+   "scheduler": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     34.99815851939226,
+     34.9967476472509,
+     35.00132522017549
+    ],
+    "frame_e2e_p50": [
+     30.182810500000002,
+     30.039336,
+     30.2112455
+    ],
+    "frame_e2e_p99": [
+     32.686861019999995,
+     32.618810839999995,
+     32.74128098
+    ],
+    "det_e2e_p99": [
+     15.621803809999998,
+     15.397164569999994,
+     19.458735469999997
+    ],
+    "det_miss_rate": 0.001,
+    "det_misses": 3,
+    "frame_miss_rate": 0.0033333333333333335,
+    "frame_misses": 10,
+    "seg_on_time_rate": 0.9353333333333333,
+    "seg_on_time": 2806,
+    "seg_late": 7,
+    "seg_skipped": 187,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 2241,
+     "seg_fused_288x512": 572
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 2238,
+     "seg_fused_288x512": 568
+    },
+    "sm_clock_mean_mhz": [
+     1733.07722007722,
+     1731.5,
+     1735.9195402298851
+    ],
+    "budget_binding_counts": {
+     "own_deadline": 2981,
+     "next_frame_detection": 19
+    },
+    "det_started_late": 16
+   },
+   "sequential seg_fused_384x672": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     31.583454659858432,
+     30.273664023282333,
+     32.122654677601076
+    ],
+    "frame_e2e_p50": [
+     1510.0060644999999,
+     1283.7681145,
+     1733.4940145
+    ],
+    "frame_e2e_p99": [
+     3089.65737071,
+     2559.76161671,
+     4451.33191371
+    ],
+    "det_e2e_p99": [
+     3070.20874871,
+     2540.3432537099998,
+     4431.270210709999
+    ],
+    "det_miss_rate": 0.9913333333333333,
+    "det_misses": 2974,
+    "frame_miss_rate": 0.9986666666666667,
+    "frame_misses": 2996,
+    "seg_on_time_rate": 0.0013333333333333333,
+    "seg_on_time": 4,
+    "seg_late": 2996,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 4
+    },
+    "sm_clock_mean_mhz": [
+     1737.8662207357859,
+     1735.0726643598616,
+     1740.0
+    ]
+   },
+   "sequential seg_fused_288x512": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     35.00144050178457,
+     34.994969000774056,
+     35.0018115887624
+    ],
+    "frame_e2e_p50": [
+     27.454969,
+     27.115437,
+     27.499595499999998
+    ],
+    "frame_e2e_p99": [
+     97.96629241999999,
+     39.12977429,
+     126.39134213
+    ],
+    "det_e2e_p99": [
+     82.89360171,
+     22.349764579999995,
+     110.21560416
+    ],
+    "det_miss_rate": 0.05566666666666667,
+    "det_misses": 167,
+    "frame_miss_rate": 0.094,
+    "frame_misses": 282,
+    "seg_on_time_rate": 0.906,
+    "seg_on_time": 2718,
+    "seg_late": 282,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_288x512": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_288x512": 2718
+    },
+    "sm_clock_mean_mhz": [
+     1740.0,
+     1739.88416988417,
+     1740.0
+    ]
+   }
+  },
+  {
+   "fps": 40,
+   "scheduler": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     40.00915457467654,
+     39.995981843680056,
+     40.01803933176998
+    ],
+    "frame_e2e_p50": [
+     27.40785,
+     18.731949999999998,
+     28.965
+    ],
+    "frame_e2e_p99": [
+     32.756923,
+     32.593973,
+     33.321398
+    ],
+    "det_e2e_p99": [
+     20.611868,
+     20.092268999999995,
+     29.110609999999987
+    ],
+    "det_miss_rate": 0.0026666666666666666,
+    "det_misses": 8,
+    "frame_miss_rate": 0.008,
+    "frame_misses": 24,
+    "seg_on_time_rate": 0.564,
+    "seg_on_time": 1692,
+    "seg_late": 16,
+    "seg_skipped": 1292,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 846,
+     "seg_fused_288x512": 862
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 841,
+     "seg_fused_288x512": 851
+    },
+    "sm_clock_mean_mhz": [
+     1739.1008771929824,
+     1732.0,
+     1739.1938325991189
+    ],
+    "budget_binding_counts": {
+     "own_deadline": 2879,
+     "next_frame_detection": 121
+    },
+    "det_started_late": 45
+   },
+   "sequential seg_fused_384x672": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     31.80701842217977,
+     31.168997522223655,
+     33.73507796717966
+    ],
+    "frame_e2e_p50": [
+     3061.75385,
+     2455.9608500000004,
+     3519.9698
+    ],
+    "frame_e2e_p99": [
+     6394.991844,
+     4626.908907,
+     7047.554831
+    ],
+    "det_e2e_p99": [
+     6375.440946,
+     4607.64474,
+     7027.919038
+    ],
+    "det_miss_rate": 0.9956666666666667,
+    "det_misses": 2987,
+    "frame_miss_rate": 0.9993333333333333,
+    "frame_misses": 2998,
+    "seg_on_time_rate": 0.0006666666666666666,
+    "seg_on_time": 2,
+    "seg_late": 2998,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 2
+    },
+    "sm_clock_mean_mhz": [
+     1739.0877192982457,
+     1734.9896193771626,
+     1740.0
+    ]
+   },
+   "sequential seg_fused_288x512": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     36.56285205456172,
+     35.80870880331145,
+     37.449865350319875
+    ],
+    "frame_e2e_p50": [
+     1349.44245,
+     879.1121499999999,
+     1549.75185
+    ],
+    "frame_e2e_p99": [
+     2351.430343,
+     1706.414574,
+     2926.853584
+    ],
+    "det_e2e_p99": [
+     2337.01726,
+     1691.202038,
+     2911.059385
+    ],
+    "det_miss_rate": 0.9916666666666667,
+    "det_misses": 2975,
+    "frame_miss_rate": 0.9973333333333333,
+    "frame_misses": 2992,
+    "seg_on_time_rate": 0.0026666666666666666,
+    "seg_on_time": 8,
+    "seg_late": 2992,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_288x512": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_288x512": 8
+    },
+    "sm_clock_mean_mhz": [
+     1740.0,
+     1735.0916334661354,
+     1740.0
+    ]
+   }
+  },
+  {
+   "fps": 45,
+   "scheduler": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     44.98284916418493,
+     44.97881192102599,
+     45.00505035423813
+    ],
+    "frame_e2e_p50": [
+     29.094881,
+     21.7297,
+     29.202789000000003
+    ],
+    "frame_e2e_p99": [
+     32.41523116,
+     32.39156876,
+     32.5789541
+    ],
+    "det_e2e_p99": [
+     23.061615359999998,
+     21.443470259999998,
+     23.394012339999996
+    ],
+    "det_miss_rate": 0.0006666666666666666,
+    "det_misses": 2,
+    "frame_miss_rate": 0.004,
+    "frame_misses": 12,
+    "seg_on_time_rate": 0.5376666666666666,
+    "seg_on_time": 1613,
+    "seg_late": 10,
+    "seg_skipped": 1377,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 1001,
+     "seg_fused_288x512": 622
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 996,
+     "seg_fused_288x512": 617
+    },
+    "sm_clock_mean_mhz": [
+     1733.9402985074628,
+     1730.5665024630541,
+     1739.9261083743843
+    ],
+    "budget_binding_counts": {
+     "own_deadline": 2956,
+     "next_frame_detection": 44
+    },
+    "det_started_late": 7
+   },
+   "sequential seg_fused_384x672": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     33.56203082881959,
+     31.675859962062077,
+     33.58427075037249
+    ],
+    "frame_e2e_p50": [
+     4014.178261,
+     3780.5880610000004,
+     4972.955061000001
+    ],
+    "frame_e2e_p99": [
+     7526.2008517799995,
+     7499.0145177800005,
+     9286.66783678
+    ],
+    "det_e2e_p99": [
+     7506.81275278,
+     7479.37574578,
+     9267.13288578
+    ],
+    "det_miss_rate": 0.9966666666666667,
+    "det_misses": 2990,
+    "frame_miss_rate": 0.999,
+    "frame_misses": 2997,
+    "seg_on_time_rate": 0.001,
+    "seg_on_time": 3,
+    "seg_late": 2997,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 3
+    },
+    "sm_clock_mean_mhz": [
+     1735.943661971831,
+     1734.3703703703704,
+     1738.6593406593406
+    ]
+   },
+   "sequential seg_fused_288x512": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     36.645980450454154,
+     36.049840331832435,
+     37.5668705792645
+    ],
+    "frame_e2e_p50": [
+     2522.655061,
+     2237.269461,
+     2728.594611
+    ],
+    "frame_e2e_p99": [
+     5036.91006178,
+     4373.29960878,
+     5487.16599278
+    ],
+    "det_e2e_p99": [
+     5021.89188078,
+     4357.7669867800005,
+     5472.10132978
+    ],
+    "det_miss_rate": 0.996,
+    "det_misses": 2988,
+    "frame_miss_rate": 0.9986666666666667,
+    "frame_misses": 2996,
+    "seg_on_time_rate": 0.0013333333333333333,
+    "seg_on_time": 4,
+    "seg_late": 2996,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_288x512": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_288x512": 4
+    },
+    "sm_clock_mean_mhz": [
+     1740.0,
+     1740.0,
+     1740.0
+    ]
+   }
+  },
+  {
+   "fps": 50,
+   "scheduler": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     49.995303691147775,
+     49.97196298031008,
+     50.00279140583022
+    ],
+    "frame_e2e_p50": [
+     23.30105,
+     23.2915,
+     27.1325
+    ],
+    "frame_e2e_p99": [
+     32.365468,
+     32.358605999999995,
+     32.582746
+    ],
+    "det_e2e_p99": [
+     23.537202999999998,
+     23.309110999999998,
+     25.570569999999996
+    ],
+    "det_miss_rate": 0.0,
+    "det_misses": 0,
+    "frame_miss_rate": 0.002,
+    "frame_misses": 6,
+    "seg_on_time_rate": 0.4593333333333333,
+    "seg_on_time": 1378,
+    "seg_late": 6,
+    "seg_skipped": 1616,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 1153,
+     "seg_fused_288x512": 231
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 1152,
+     "seg_fused_288x512": 226
+    },
+    "sm_clock_mean_mhz": [
+     1732.2568306010928,
+     1729.2841530054645,
+     1739.3804347826087
+    ],
+    "budget_binding_counts": {
+     "own_deadline": 2918,
+     "next_frame_detection": 82
+    },
+    "det_started_late": 4
+   },
+   "sequential seg_fused_384x672": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     31.483270372564522,
+     30.80130136853539,
+     31.952209616873162
+    ],
+    "frame_e2e_p50": [
+     5877.6188,
+     5653.19455,
+     6358.2375
+    ],
+    "frame_e2e_p99": [
+     11667.516087,
+     11200.569575,
+     12371.304544999999
+    ],
+    "det_e2e_p99": [
+     11648.010512,
+     11181.104277,
+     12351.572554999999
+    ],
+    "det_miss_rate": 0.998,
+    "det_misses": 2994,
+    "frame_miss_rate": 0.999,
+    "frame_misses": 2997,
+    "seg_on_time_rate": 0.001,
+    "seg_on_time": 3,
+    "seg_late": 2997,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_384x672": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_384x672": 3
+    },
+    "sm_clock_mean_mhz": [
+     1739.6894197952217,
+     1734.9342560553632,
+     1739.9722222222222
+    ]
+   },
+   "sequential seg_fused_288x512": {
+    "repeats": 3,
+    "frames": 3000,
+    "achieved_fps": [
+     36.2495226028497,
+     33.34993081573527,
+     36.429393405791636
+    ],
+    "frame_e2e_p50": [
+     3952.5585499999997,
+     3728.8352999999997,
+     4342.5946
+    ],
+    "frame_e2e_p99": [
+     7523.476794,
+     7388.410401,
+     9913.950091
+    ],
+    "det_e2e_p99": [
+     7506.917243,
+     7371.580433,
+     9895.885879000001
+    ],
+    "det_miss_rate": 0.9963333333333333,
+    "det_misses": 2989,
+    "frame_miss_rate": 0.999,
+    "frame_misses": 2997,
+    "seg_on_time_rate": 0.001,
+    "seg_on_time": 3,
+    "seg_late": 2997,
+    "seg_skipped": 0,
+    "seg_ran_by_rung": {
+     "seg_fused_288x512": 3000
+    },
+    "seg_on_time_by_rung": {
+     "seg_fused_288x512": 3
+    },
+    "sm_clock_mean_mhz": [
+     1740.0,
+     1734.9407114624505,
+     1740.0
+    ]
+   }
+  }
+ ],
+ "excluded_runs": []
+}

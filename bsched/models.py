@@ -32,7 +32,8 @@ def _preload_cuda_dlls() -> None:
     import glob
     import sys
     site = os.path.dirname(os.path.dirname(ort.__file__))
-    for d in glob.glob(os.path.join(site, "nvidia", "*", "bin")):
+    # nvidia/*/bin: CUDA, cuDNN. tensorrt_libs: TensorRT 10 (Stage 5, optional).
+    for d in glob.glob(os.path.join(site, "nvidia", "*", "bin")) + glob.glob(os.path.join(site, "tensorrt_libs")):
         if sys.platform == "win32":
             os.add_dll_directory(d)
         os.environ["PATH"] = d + os.pathsep + os.environ.get("PATH", "")
@@ -49,8 +50,30 @@ _OPT_LEVELS = {
 }
 
 
+def _trt_provider(rt: dict, trt: dict, onnx_path: str) -> tuple[str, dict]:
+    """TensorRT EP options. `trt["precision"]` is fp32 | fp16 | int8.
+
+    int8 expects a QDQ graph (explicit quantization), so no calibration table
+    is used; FP16 is also enabled so layers left unquantized aren't forced to
+    FP32. Engines and the timing cache are cached per graph and precision.
+    """
+    prec = trt["precision"]
+    tc = rt["tensorrt"]
+    cache = os.path.join(tc["engine_cache_dir"], f"{os.path.splitext(os.path.basename(onnx_path))[0]}__{prec}")
+    os.makedirs(cache, exist_ok=True)
+    return "TensorrtExecutionProvider", {
+        "device_id": rt.get("device_id", 0),
+        "trt_fp16_enable": prec in ("fp16", "int8"),
+        "trt_int8_enable": prec == "int8",
+        "trt_engine_cache_enable": True, "trt_engine_cache_path": cache,
+        "trt_timing_cache_enable": True, "trt_timing_cache_path": cache,
+        "trt_max_workspace_size": int(tc["max_workspace_mib"]) << 20,
+        "trt_builder_optimization_level": int(tc["builder_optimization_level"]),
+    }
+
+
 def make_session(onnx_path: str, rt: dict, device: str = "cuda",
-                 profile_dir: str | None = None) -> ort.InferenceSession:
+                 profile_dir: str | None = None, trt: dict | None = None) -> ort.InferenceSession:
     so = ort.SessionOptions()
     so.graph_optimization_level = _OPT_LEVELS[rt.get("graph_optimization", "all")]
     so.log_severity_level = 3
@@ -66,6 +89,9 @@ def make_session(onnx_path: str, rt: dict, device: str = "cuda",
             "use_tf32": int(rt.get("use_tf32", True)),
             "cudnn_conv_use_max_workspace": int(rt.get("cudnn_conv_use_max_workspace", True)),
         }), "CPUExecutionProvider"]
+        if trt is not None:
+            # TensorRT takes the subgraphs it supports; the rest stays on CUDA.
+            providers.insert(0, _trt_provider(rt, trt, onnx_path))
     else:
         providers = ["CPUExecutionProvider"]
     sess = ort.InferenceSession(onnx_path, sess_options=so, providers=providers)
@@ -73,19 +99,20 @@ def make_session(onnx_path: str, rt: dict, device: str = "cuda",
         # The Python wrapper otherwise silently rebuilds the session CPU-only
         # if a CUDA kernel fails at run time.
         sess.disable_fallback()
-        if sess.get_providers()[0] != "CUDAExecutionProvider":
+        want = "TensorrtExecutionProvider" if trt is not None else "CUDAExecutionProvider"
+        if sess.get_providers()[0] != want:
             raise RuntimeError(f"CUDA EP not active for {onnx_path}: {sess.get_providers()}. "
                                "Check onnxruntime-gpu install and CUDA/cuDNN DLLs.")
     return sess
 
 
-def node_placement(onnx_path: str, rt: dict, feed: dict) -> dict:
+def node_placement(onnx_path: str, rt: dict, feed: dict, trt: dict | None = None) -> dict:
     """Run once with profiling on and count which EP executed each node.
 
     get_providers() only lists registered EPs; this shows where nodes ran.
     """
     with tempfile.TemporaryDirectory() as td:
-        sess = make_session(onnx_path, rt, "cuda", profile_dir=td)
+        sess = make_session(onnx_path, rt, "cuda", profile_dir=td, trt=trt)
         sess.run(None, feed)
         prof = sess.end_profiling()
         with open(prof) as f:

@@ -131,6 +131,48 @@ fps = [0, 10, 15, 20, 25, 30, 35, 40, 45, 50]          # same as Stage 3
 repeats = 3
 out_dir = "results/stage4"
 
+[tensorrt]
+# ORT TensorRT EP (needs TensorRT 10: tensorrt-cu12-libs). Fixed before any
+# Stage 5 run. Engines are built once and cached; every timed run loads the
+# cached engine in a fresh process.
+engine_cache_dir = "models/trt_cache"
+max_workspace_mib = 1024
+builder_optimization_level = 3   # TensorRT default
+# ORT's own graph optimizations are off for TensorRT sessions: at "basic" and
+# above ORT re-quantizes conv biases to int32 DequantizeLinear, which TensorRT
+# rejects (82 nodes fell to CPU on the INT8 detector). TensorRT does its own
+# fusion. Measured: "disable" -> the whole graph runs as one TensorRT engine.
+graph_optimization = "disable"
+
+[stage5]
+# Precision variants of the three deployed models. Each variant becomes a
+# config key "<model>@<variant>" (see bsched/config.py:expand_variants).
+models = ["detector_fused", "seg_fused_384x672", "seg_fused_288x512"]
+#   cuda_fp32  CUDA EP, FP32 (TF32 convs), the Stage 2-4 reference
+#   trt_fp32   TensorRT EP, FP32 graph, FP32/TF32 kernels only
+#   trt_fp16   TensorRT EP, FP32 graph, FP16 kernels allowed
+#   trt_int8   TensorRT EP, QDQ INT8 graph (explicit quantization), FP16
+#              allowed for layers left unquantized
+variants = ["cuda_fp32", "trt_fp32", "trt_fp16", "trt_int8"]
+fps = [0, 30]
+repeats = 3
+out_dir = "results/stage5"
+# INT8 post-training quantization (scripts/quantize_int8.py). Calibration
+# frames come from the TRAIN splits only; evaluation uses val.
+calib_images = 256
+calib_method = "MinMax"
+quant_op_types = ["Conv", "MatMul", "Gemm"]   # norms, softmax, heads' glue stay float
+per_channel = true
+# Detection mAP (scripts/eval_det.py), BDD100K 100k val, COCO-style AP.
+det_frames_glob = "data/bdd100k/images/100k/val/*.jpg"
+det_labels_dir = "data/bdd100k/labels/det_v1/val"
+det_score_threshold = 0.001      # keep all of YOLOv10's top-300 for AP
+det_max_dets = 100               # per image, as COCO
+# BDD100K category -> COCO class used by the COCO-trained YOLOv10n. BDD
+# "rider" is a person in COCO. BDD "traffic sign" has no COCO class and is
+# not evaluated.
+det_class_map = { person = "person", rider = "person", car = "car", truck = "truck", bus = "bus", train = "train", motor = "motorcycle", bike = "bicycle", "traffic light" = "traffic light" }
+
 [stage1]
 n_frames = 20
 n_visualize = 4

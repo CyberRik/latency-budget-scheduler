@@ -9,10 +9,10 @@ when the budget is exhausted.
 Nothing is interpolated or estimated. Anything that could not be measured is
 listed as such.**
 
-Status: Stages 1 (setup/correctness), 2 (measurement harness + single-model
-baselines), 2b (GPU-fused pipeline, segmentation resolution sweep) and 3
-(sequential contention) and 4 (deadline-aware scheduler) complete. Stage 5
-(INT8/FP16 variants, accuracy trade-off table) next.
+Status: all stages complete: 1 (setup/correctness), 2 (measurement harness +
+single-model baselines), 2b (GPU-fused pipeline, segmentation resolution
+sweep), 3 (sequential contention), 4 (deadline-aware scheduler) and 5
+(FP32/FP16/INT8 on TensorRT: precision × latency × memory × accuracy).
 
 ## Hardware and software this was measured on
 
@@ -23,7 +23,7 @@ Recorded automatically in each run's JSON (`env` block). Development machine:
 | GPU | NVIDIA RTX 3050 Laptop, 4 GB, 48 W cap, Ampere sm_86, WDDM driver 566.07 |
 | CPU / RAM | Ryzen 7 5800HS / 16 GB |
 | OS | Windows 11 |
-| Runtime | onnxruntime-gpu 1.24.4, CUDA EP, CUDA 12 / cuDNN 9 from pip wheels |
+| Runtime | onnxruntime-gpu 1.24.4, CUDA EP, CUDA 12 / cuDNN 9 from pip wheels; Stage 5 also TensorRT EP with TensorRT 10.16.1.11 |
 
 Caveats specific to this platform:
 
@@ -58,6 +58,12 @@ scripts/build_fused.py   wrap models with in-graph GPU pre/post-processing
 scripts/verify_fused.py  fused vs CPU-path equivalence
 scripts/eval_seg.py      segmentation mIoU on BDD100K val
 scripts/run_stage3.py    stage-3 sequential contention FPS sweep
+scripts/run_stage4.py    stage-4 deadline-aware scheduler sweep
+scripts/quantize_int8.py stage-5 INT8 QDQ models (train-split calibration)
+scripts/verify_stage5.py stage-5 engine build, node placement, agreement vs FP32
+scripts/eval_det.py      detection mAP on BDD100K 100k-val
+scripts/crosscheck_coco.py  optional: mAP vs pycocotools (not a dependency)
+scripts/run_stage5.py    stage-5 latency sweep + final table
 models/                  ONNX files + export_report.json
 data/                    archives/ (raw zips), bdd100k/ (extracted), manifest.json
 results/<stage>/         JSON results + visualisations
@@ -75,6 +81,16 @@ py -3.13 -m venv .venv
 
 CUDA and cuDNN are loaded from the `nvidia-*` pip wheels (see
 `bsched/models.py::_preload_cuda_dlls`), so no system CUDA toolkit is required.
+
+Stage 5 only also needs the TensorRT 10 libraries (a 2.2 GB wheel, not in
+`requirements.txt`):
+
+```powershell
+.venv\Scripts\python -m pip install --no-deps tensorrt-cu12-libs==10.16.1.11 --extra-index-url https://pypi.nvidia.com
+.venv\Scripts\python scripts\build_fused.py        # also writes the *_trtpost_* graphs
+.venv\Scripts\python scripts\quantize_int8.py      # needs the train zips in data/archives/
+.venv\Scripts\python scripts\verify_stage5.py      # builds and caches the engines (25 min total here)
+```
 
 Resolved versions on the dev machine: onnxruntime-gpu 1.24.4, cuDNN 9.27.0.42,
 cuBLAS 12.9.2.10, CUDA runtime 12.9.79, numpy 2.5.3, opencv-python-headless 5.0.0.93.
@@ -677,8 +693,8 @@ What the comparison shows:
    At 40–50 FPS that falls to 46–56%, split between rungs. Below capacity,
    *always running 288×512* gets more masks on time (96–99% at 15–30 FPS),
    at the lower resolution and with 1–3% frame misses and up to 0.6%
-   detection misses. Stage 5's mIoU per rung will put a number on that
-   trade.
+   detection misses. Stage 5 measured the accuracy side: mIoU 0.4395 at
+   384×672 vs 0.4180 at 288×512 (CUDA FP32, BDD100K 10k-val).
 3. **At 10–15 FPS the scheduler is worse than sequential, including for
    detection.** At 10 FPS, 82.9% of detections miss (sequential: 0–0.3%); at
    15 FPS, 1.0% (sequential: 0%). The cause is the GPU clocks, not the
@@ -713,3 +729,225 @@ occur in Stage 3 (6 vs 45 runs) and Stage 4 (17 vs 6 runs). The cause is not
 established; per-process cuDNN algorithm search (`EXHAUSTIVE`) is a
 candidate that was not tested. It feeds into the scheduler's estimates and
 into the sequential service time.
+
+## Stage 5: precision variants (FP32 / FP16 / INT8 on TensorRT)
+
+### What was compared
+
+Every model in the pipeline (the YOLOv10n detector, SegFormer-B0 at 384×672
+and at 288×512) is measured in four variants. Variants are config keys
+`<model>@<variant>` (`bsched/config.py::expand_variants`):
+
+| variant | runtime | graph | notes |
+|---|---|---|---|
+| `cuda_fp32` | ORT CUDA EP (as in Stages 2–4) | the fused FP32 graph | reference row |
+| `trt_fp32` | ORT TensorRT EP | fused FP32 graph | |
+| `trt_fp16` | ORT TensorRT EP | fused FP32 graph, `trt_fp16_enable` | TensorRT picks FP16 per layer |
+| `trt_int8` | ORT TensorRT EP | fused INT8 QDQ graph, `trt_int8_enable` + `trt_fp16_enable` | explicit quantization, no calibration table |
+
+"FP32" allows TF32 tensor-core math in both runtimes. The CUDA EP sets it
+explicitly (`use_tf32 = 1`); for TensorRT it is the builder's documented default
+and was not inspected in the built engines.
+
+INT8 was run on TensorRT because ORT's CUDA EP has no INT8 convolution kernels.
+To compare like with like, FP32 and FP16 were run there too, and CUDA EP FP32
+stays as the reference.
+
+**TensorRT install.** `tensorrt-cu12-libs` 10.16.1.11 for win_amd64, from
+`https://pypi.nvidia.com` (a 2.2 GB wheel, SHA-256
+`ed0d4536f1322aa2f76da54feb3f9bd2d14d89e4325cef02165a98f3a2c1a493`). It was
+installed with `--no-deps`, and `bsched/models.py::_preload_cuda_dlls` adds
+`site-packages/tensorrt_libs` to the DLL path. Settings are in `[tensorrt]` in
+`config.toml`: workspace 1 GiB, builder optimization level 3 (the default).
+Engines and timing caches go in `models/trt_cache/`, one directory per graph
+and precision.
+
+**Engine build is a one-off cost and is not inside any latency number.**
+`scripts/verify_stage5.py` builds every engine once from an empty cache and
+records session-creation time as `engine_build_s`. Every timed run then loads
+the cached engine in a fresh process.
+
+### INT8 method (`scripts/quantize_int8.py`, `results/stage5/quantization.json`)
+
+- ORT `quantize_static`, QDQ format, applied to the core model (FP32 ONNX
+  without pre/post-processing). The fused graph is then rebuilt around the
+  quantized core, so pre/post-processing stays in float.
+- Quantized ops: Conv, MatMul, Gemm. INT8 is symmetric for activations and
+  for weights; weights are per-channel. Biases are not quantized.
+- Calibration: MinMax over 256 seeded frames from the **train** splits only
+  (100k/train for the detector, 10k/train for the segmenters), read directly
+  from the zips. No val frame is used. Every file name is listed in
+  `quantization.json`.
+- Result: 83 Conv + 2 MatMul quantized in the detector, and 20 Conv + 68
+  MatMul in each segmenter.
+- ORT 1.24.4 bug, found here: the `CalibMaxIntermediateOutputs` option clears
+  each full batch without computing ranges from it, so data is silently
+  dropped. It isn't needed for MinMax (which keeps running scalars), so it
+  isn't used. There's a comment in the script.
+
+### Two TensorRT compatibility fixes (verified before timing)
+
+`scripts/verify_stage5.py` checks node placement with ORT's profiler. It fails
+if any node runs on CPU, or if a TensorRT variant isn't a single TensorRT
+engine.
+
+1. **ORT graph optimizations are off for TensorRT sessions.** At level "basic"
+   and above, ORT re-quantizes conv biases into int32 `DequantizeLinear`
+   nodes. TensorRT rejects those, and in the first INT8 attempt 82 nodes fell
+   back to CPU, splitting the detector into 83 TensorRT pieces. Setting
+   `QuantizeBias: False` alone did not prevent it. With
+   `graph_optimization = "disable"`, every variant is one engine. TensorRT
+   does its own fusion; CUDA EP sessions are unchanged.
+2. **TensorRT segmenters use a standard `ArgMax` post-processing graph.** The
+   elementwise uint8 argmax used for the CUDA EP (written to avoid ORT's
+   1.1 GB CUDA `ArgMax`, see Stage 2b) is rejected by TensorRT ("For INT32
+   tensors, the output type must also be INT32"). That left the whole graph off
+   TensorRT. The `*_trtpost_*.onnx` graphs end in `ArgMax` + `Cast(uint8)`
+   instead; the output is the same class map. The CUDA EP reference graphs
+   are unchanged.
+
+Agreement with `cuda_fp32` on 20 frames (`results/stage5/verify.json`):
+
+| | trt_fp32 | trt_fp16 | trt_int8 |
+|---|---|---|---|
+| detector, boxes at score ≥ 0.25 | 139/139 matched | 139 of 140 matched | 116 matched; 23 of the 139 reference boxes and 10 of 126 INT8 boxes unmatched; max score diff 0.49 |
+| seg 384×672, same-class pixels | 99.98% | 99.96% | 96.26% |
+| seg 288×512, same-class pixels | 99.99% | 99.95% | 96.50% |
+
+### Accuracy
+
+**Detection** (`scripts/eval_det.py`, `results/stage5/det_map.json`):
+
+- **Data:** all 10 000 frames of BDD100K 100k-val against the v1 box labels.
+  None were excluded; there are 150 663 GT boxes.
+- **Classes:** YOLOv10n is a COCO model, so BDD classes are mapped to COCO
+  classes, fixed in `[stage5].det_class_map` before any evaluation. Rider is
+  mapped to person; car, truck, bus and train map to themselves; motor →
+  motorcycle; bike → bicycle; traffic light → traffic light. BDD "traffic
+  sign" has no COCO class and is not evaluated (34 915 boxes).
+- **Absolute mAP is low:** this is a COCO model on a different domain and
+  labelling policy. What Stage 5 compares is the change between variants
+  on the same frames.
+- **Metric:** COCO-style AP (`bsched/metrics.py::coco_ap`: IoU 0.50:0.95,
+  101 recall points, top-100 per image and class). It is computed on all 300
+  YOLOv10 outputs with score ≥ 0.001, from the models run exactly as deployed.
+- **Cross-check against pycocotools** (`scripts/crosscheck_coco.py`;
+  pycocotools 2.0.11 is not a project dependency). For the CUDA FP32
+  predictions on all 10 000 frames, both give mAP 0.1334521187553594 and the
+  same mAP50, with a maximum per-class AP difference of 5.6e-17. Five disjoint
+  2000-frame chunks also agree, each to within 5.6e-17
+  (`results/stage5/coco_crosscheck/`).
+
+**Segmentation** (`scripts/eval_seg.py`, `results/stage5/seg_miou.json`): all
+of BDD100K 10k-val (1000 images, of which 2 are not 1280×720 and are excluded,
+leaving 998). Dataset-level mIoU over the 19 classes.
+
+### Results (`results/stage5/summary.md`)
+
+Each model runs alone through the Stage 3 harness: 1000 frames per run, 50
+warmup iterations discarded, closed loop and at 30 FPS, 3 repeats, a fresh
+process per run, shuffled order. All 72 runs were on AC power with telemetry
+recorded. Latency is in ms, shown as the median over repeats [min, max]. Memory
+is the closed-loop peak minus the CUDA context. SM clock and board power are
+nvidia-smi means over the run.
+
+**Closed loop (GPU always busy, clocks at ~1740 MHz):**
+
+| model | variant | GPU p50 | e2e p50 | e2e p99 | device mem (MiB) | accuracy | Δ vs cuda_fp32 | engine build (s) |
+|---|---|---|---|---|---|---|---|---|
+| detector | cuda_fp32 | 10.07 [10.06, 10.23] | 10.96 | 14.49 [13.70, 16.56] | 94 | mAP 0.1335 (AP50 0.2331) | – | – |
+| | trt_fp32 | 5.25 [5.23, 5.30] | 6.03 | 8.18 [7.91, 10.29] | 88 | 0.1334 (0.2331) | −0.0000 | 106 |
+| | trt_fp16 | **3.47** [3.28, 3.49] | 4.23 | 5.63 [5.07, 9.53] | 86 | 0.1335 (0.2333) | +0.0000 | 305 |
+| | trt_int8 | 4.29 [3.93, 4.37] | 5.04 | 6.68 [6.11, 7.04] | 76 | **0.1162** (0.2137) | **−0.0172** | 406 |
+| seg 384×672 | cuda_fp32 | 18.52 [18.49, 18.59] | 19.46 | 22.07 [20.92, 22.16] | 486 | mIoU 0.4395 | – | – |
+| | trt_fp32 | 11.30 [11.27, 11.32] | 12.20 | 12.64 [12.52, 12.71] | 196 | 0.4395 | +0.0000 | 51 |
+| | trt_fp16 | 7.94 [7.91, 8.03] | 8.85 | 9.64 [9.32, 10.10] | 146 | 0.4396 | +0.0001 | 252 |
+| | trt_int8 | **7.49** [7.37, 7.77] | 8.41 | 10.24 [9.49, 11.97] | 128 | 0.4401 | +0.0006 | 76 |
+| seg 288×512 | cuda_fp32 | 13.92 [13.27, 14.49] | 14.84 | 20.65 [18.83, 20.90] | 358 | mIoU 0.4180 | – | – |
+| | trt_fp32 | 7.34 [7.33, 7.43] | 8.22 | 9.50 [9.03, 9.88] | 170 | 0.4180 | −0.0000 | 39 |
+| | trt_fp16 | **5.28** [5.24, 5.44] | 6.15 | 8.83 [7.80, 10.01] | 128 | 0.4181 | +0.0001 | 209 |
+| | trt_int8 | 5.30 [4.83, 5.58] | 6.18 | 8.21 [7.32, 8.72] | 114 | 0.4194 | +0.0014 | 63 |
+
+**At 30 FPS (GPU partly idle):**
+
+| model | variant | GPU p50 | e2e p99 | miss | SM MHz | board W (closed → 30 FPS) |
+|---|---|---|---|---|---|---|
+| detector | cuda_fp32 | 14.42 | 17.83 [17.46, 18.08] | 0.0% | 893 | 37 → 16 |
+| | trt_fp32 | 13.01 | 14.47 [14.46, 14.59] | 0.0% | 600 | 39 → 15 |
+| | trt_fp16 | 13.31 | 15.77 [15.49, 22.72] | 0.1% | 801 | 32 → 13 |
+| | trt_int8 | 13.18 | 15.99 [15.75, 16.40] | 0.0% | 699 | 31 → 13 |
+| seg 384×672 | cuda_fp32 | 18.55 | 23.05 [22.14, 23.33] | 0.1% | 1740 | 47 → 35 |
+| | trt_fp32 | 13.25 | 14.82 [14.74, 15.36] | 0.0% | 1254 | 48 → 22 |
+| | trt_fp16 | 13.33 | 14.78 [14.69, 15.17] | 0.0% | 814 | 46 → 18 |
+| | trt_int8 | 13.33 | 14.88 [14.77, 14.93] | 0.0% | 848 | 45 → 17 |
+| seg 288×512 | cuda_fp32 | 13.43 | 19.00 [18.70, 19.87] | 0.0% | 1650 | 42 → 27 |
+| | trt_fp32 | 13.27 | 15.29 [14.75, 15.36] | 0.0% | 791 | 45 → 17 |
+| | trt_fp16 | 13.19 | 14.55 [14.40, 15.58] | 0.0% | 569 | 42 → 16 |
+| | trt_int8 | 11.42 | 22.54 [22.41, 22.80] | 0.0% | 644 | 36 → 15 |
+
+What the measurements show:
+
+1. **Most of the speedup comes from TensorRT itself, not lower precision.**
+   - TensorRT FP32 cuts GPU time 1.6–1.9× compared with the CUDA EP: 10.07 →
+     5.25 ms for the detector, 18.52 → 11.30 ms (384×672) and 13.92 → 7.34 ms
+     (288×512) for segmentation.
+   - Accuracy is unchanged: ΔmAP and ΔmIoU are within ±0.0001.
+   - FP16 then gives a further 1.4–1.5× (3.47, 7.94 and 5.28 ms), again with
+     accuracy unchanged.
+2. **INT8 is not the fastest variant, and it costs detection accuracy.**
+   - The INT8 detector is slower than FP16 (4.29 vs 3.47 ms) and loses 0.0172
+     mAP: 0.1335 → 0.1162, 13% relative. All 8 evaluated classes drop, and
+     AP50 falls by 0.0194.
+   - For the segmenters, INT8 equals or slightly beats FP16 on speed (7.49 vs
+     7.94 ms at 384×672; 5.30 vs 5.28 ms at 288×512).
+   - Segmentation mIoU moved up slightly (+0.0006 and +0.0014), but pixel
+     accuracy moved down (0.8859 → 0.8815 and 0.8805 → 0.8771), and on the 20
+     verify frames 3.5–3.7% of pixels change class against FP32. One val split was evaluated and no
+     interval was computed, so the mIoU rise is not evidence that INT8 is
+     better.
+   - Why INT8 is slower than FP16 on the detector was not investigated. QDQ
+     placement and reformat layers in the engine are candidates; the engine's
+     layer list was not inspected.
+   - Only one INT8 recipe was tried (MinMax, Conv/MatMul/Gemm). Percentile or
+     entropy calibration, or keeping sensitive layers in FP16, might recover
+     some detection mAP. That is not measured.
+3. **Memory.** The CUDA EP reference needs 358–486 MiB for a segmenter. The
+   TensorRT engines need 114–196 MiB, falling with precision. For the
+   detector, all variants are within 76–94 MiB. These are single-model
+   numbers. The memory of a combined TensorRT pipeline was not measured.
+4. **At 30 FPS the speedup turns into lower clocks, not lower latency.**
+   - With the GPU partly idle, the driver lowers the SM clock until each
+     inference takes about 13 ms of GPU time (11.4–13.3 ms for every TensorRT
+     variant).
+   - So 11 of the 12 variants have nearly the same 30 FPS latency (p99
+     14.5–16 ms) whatever their closed-loop speed. The exception is 288×512
+     INT8 (below). The CUDA EP reference is higher (17.8–23.1 ms); for
+     segmentation it stays near full clock.
+   - What the speedup buys at a fixed frame rate is power: 384×672
+     segmentation draws 35 W (CUDA FP32) vs 17–22 W (TensorRT) on average.
+   - This is the same down-clocking seen at low FPS in Stages 3 and 4. Pinned
+     clocks were not tried, so latency at 30 FPS with full clocks is not
+     measured.
+   - One unexplained result: 288×512 INT8 at 30 FPS has a p99 of 22.5 ms in
+     all 3 repeats, while its p50 is 12.4 ms.
+5. **Engine build time** is 39–106 s for FP32, 209–305 s for FP16 and
+   63–406 s for INT8 on this laptop. It's a one-off cost per GPU, TensorRT
+   version and graph. Loading a cached engine was not timed separately.
+
+**Not measured in Stage 5:**
+- the two-model pipeline (Stage 3) and the scheduler (Stage 4) using these
+  variants;
+- latency with pinned clocks;
+- other INT8 calibration methods;
+- whether TF32 is active inside the TensorRT FP32 engines.
+
+The table gives per-model inputs for those experiments, not their results.
+
+### Invalid and excluded runs (`results/stage5/invalid/`)
+
+- The first full latency sweep ran while the pycocotools cross-check was using
+  a full CPU core. All 72 runs were set aside and the sweep was repeated with
+  nothing else running.
+- One run of the repeat recorded no GPU telemetry and was replaced.
+- `run_stage5.py` now excludes and lists any run that wasn't on AC power or has
+  no telemetry. None were excluded from the final table.

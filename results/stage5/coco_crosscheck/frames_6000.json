@@ -1,0 +1,62 @@
+{
+ "frames": [
+  6000,
+  8000
+ ],
+ "n_frames": 2000,
+ "ours_mAP": 0.13427865003824271,
+ "pycocotools_mAP": 0.1342786500382427,
+ "ours_mAP50": 0.2308018141021413,
+ "pycocotools_mAP50": 0.23080181410214132,
+ "max_abs_diff_per_class_AP": 2.7755575615628914e-17,
+ "per_class": {
+  "person": {
+   "ours_AP": 0.18412906445818136,
+   "pycocotools_AP": 0.18412906445818136,
+   "ours_AP50": 0.37656771221898916,
+   "pycocotools_AP50": 0.37656771221898916
+  },
+  "bicycle": {
+   "ours_AP": 0.0864040767960942,
+   "pycocotools_AP": 0.08640407679609419,
+   "ours_AP50": 0.1941038509987548,
+   "pycocotools_AP50": 0.1941038509987548
+  },
+  "car": {
+   "ours_AP": 0.288840475752149,
+   "pycocotools_AP": 0.288840475752149,
+   "ours_AP50": 0.4975621369648883,
+   "pycocotools_AP50": 0.4975621369648883
+  },
+  "motorcycle": {
+   "ours_AP": 0.05542486624570599,
+   "pycocotools_AP": 0.055424866245706,
+   "ours_AP50": 0.10578361994711964,
+   "pycocotools_AP50": 0.10578361994711964
+  },
+  "bus": {
+   "ours_AP": 0.24229271881121991,
+   "pycocotools_AP": 0.24229271881121994,
+   "ours_AP50": 0.3111993646899551,
+   "pycocotools_AP50": 0.3111993646899551
+  },
+  "train": {
+   "ours_AP": 0.0,
+   "pycocotools_AP": 0.0,
+   "ours_AP50": 0.0,
+   "pycocotools_AP50": 0.0
+  },
+  "truck": {
+   "ours_AP": 0.16986463005608285,
+   "pycocotools_AP": 0.16986463005608285,
+   "ours_AP50": 0.23209727381750933,
+   "pycocotools_AP50": 0.23209727381750933
+  },
+  "traffic light": {
+   "ours_AP": 0.047273368186508416,
+   "pycocotools_AP": 0.047273368186508416,
+   "ours_AP50": 0.12910055417991406,
+   "pycocotools_AP50": 0.12910055417991406
+  }
+ }
+}

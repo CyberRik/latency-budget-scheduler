@@ -91,7 +91,10 @@ def build_detector(core: onnx.ModelProto, frame_hw, input_hw) -> onnx.ModelProto
     return fused
 
 
-def build_segmenter(core: onnx.ModelProto, frame_hw, input_hw) -> onnx.ModelProto:
+def build_segmenter(core: onnx.ModelProto, frame_hw, input_hw, argmax: str = "elementwise") -> onnx.ModelProto:
+    """argmax="elementwise" (CUDA EP, Stages 2-4) or "onnx" (TensorRT variants,
+    Stage 5): TensorRT's parser rejects the uint8 Equal/Where chain, and its
+    own ArgMax is not ORT's CUDA kernel, so TensorRT graphs use ArgMax + Cast."""
     H, W = frame_hw
     IH, IW = input_hw
     opset, irv = core.opset_import[0].version, core.ir_version
@@ -116,6 +119,17 @@ def build_segmenter(core: onnx.ModelProto, frame_hw, input_hw) -> onnx.ModelProt
     # isolated fresh-process probe; this form held ~300 MiB, ran ~0.5-1 ms
     # slower, and gave bit-identical output (ties resolve to the lowest index,
     # as ArgMax does). See README, Stage 2b.
+    if argmax == "onnx":
+        post = _model([_resize(out_name, "up", "up_sizes"),
+                       helper.make_node("ArgMax", ["up"], ["am"], axis=1, keepdims=0),
+                       helper.make_node("Cast", ["am"], ["mask"], to=TensorProto.UINT8)],
+                      [helper.make_tensor_value_info(out_name, TensorProto.FLOAT, None)],
+                      [helper.make_tensor_value_info("mask", TensorProto.UINT8, [1, H, W])],
+                      [_const("up_sizes", np.array([1, C, H, W], np.int64))], opset, irv, "seg_post")
+        fused = compose.merge_models(pre, core, io_map=[(in_name, in_name)])
+        fused = compose.merge_models(fused, post, io_map=[(out_name, out_name)])
+        fused.graph.name = "segformer_fused"
+        return fused
     post_nodes = [
         _resize(out_name, "up", "up_sizes"),
         helper.make_node("Split", ["up", "split_ones"], [f"ch{k}" for k in range(C)], axis=1),
@@ -152,6 +166,13 @@ def main():
     jobs = []
     for key, m in cfg["models"].items():
         if not m.get("fused"):
+            continue
+        if "@" in key:
+            # Stage 5: TensorRT FP32/FP16 segmenters get the ArgMax post graph.
+            # (INT8 graphs are built by quantize_int8.py.)
+            if m["task"] == "segmentation" and m["variant"] == "trt_fp32":   # fp16 shares the file
+                jobs.append((key, resolve(cfg, m["source_onnx"]), resolve(cfg, m["onnx"]),
+                             lambda c, f, i: build_segmenter(c, f, i, argmax="onnx"), m["input_hw"]))
             continue
         src = resolve(cfg, m["source_onnx"])
         build = build_detector if m["task"] == "detection" else build_segmenter

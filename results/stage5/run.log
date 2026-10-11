@@ -1,0 +1,253 @@
+=== 2026-10-12T00:02:40+05:30 eval_det
+10000 frames, 150663 GT boxes, excluded 0, loaded in 84s
+detector_fused@trt_fp32: mAP=0.1334 mAP50=0.2331 mAP75=0.1268 (n=10000, 118s infer)
+detector_fused@trt_fp16: mAP=0.1335 mAP50=0.2333 mAP75=0.1269 (n=10000, 97s infer)
+detector_fused@trt_int8: mAP=0.1162 mAP50=0.2137 mAP75=0.1069 (n=10000, 102s infer)
+=== 2026-10-12T00:13:30+05:30 eval_seg
+seg_fused_384x672@cuda_fp32: mIoU=0.4395 pixel_acc=0.8859 (n=998)
+seg_fused_384x672@trt_fp32: mIoU=0.4395 pixel_acc=0.8859 (n=998)
+seg_fused_384x672@trt_fp16: mIoU=0.4396 pixel_acc=0.8859 (n=998)
+seg_fused_384x672@trt_int8: mIoU=0.4401 pixel_acc=0.8815 (n=998)
+seg_fused_288x512@cuda_fp32: mIoU=0.4180 pixel_acc=0.8805 (n=998)
+seg_fused_288x512@trt_fp32: mIoU=0.4180 pixel_acc=0.8805 (n=998)
+seg_fused_288x512@trt_fp16: mIoU=0.4181 pixel_acc=0.8806 (n=998)
+seg_fused_288x512@trt_int8: mIoU=0.4194 pixel_acc=0.8771 (n=998)
+=== 2026-10-12T00:19:12+05:30 latency
+[1/72] detector_fused@cuda_fp32 r1 fps=30
+[2/72] seg_fused_288x512@trt_fp16 r1 fps=30
+[3/72] detector_fused@trt_int8 r1 fps=30
+[4/72] seg_fused_288x512@cuda_fp32 r1 fps=30
+[5/72] seg_fused_288x512@cuda_fp32 r1 fps=0
+[6/72] seg_fused_288x512@trt_int8 r1 fps=30
+[7/72] seg_fused_288x512@trt_int8 r1 fps=0
+[8/72] seg_fused_384x672@trt_int8 r1 fps=30
+[9/72] seg_fused_288x512@trt_fp16 r1 fps=0
+[10/72] seg_fused_384x672@trt_fp32 r1 fps=30
+[11/72] detector_fused@trt_fp32 r1 fps=0
+[12/72] seg_fused_384x672@trt_fp16 r1 fps=0
+[13/72] seg_fused_384x672@trt_fp32 r1 fps=0
+[14/72] detector_fused@trt_fp32 r1 fps=30
+[15/72] detector_fused@trt_fp16 r1 fps=0
+[16/72] detector_fused@trt_fp16 r1 fps=30
+[17/72] seg_fused_384x672@cuda_fp32 r1 fps=0
+[18/72] detector_fused@cuda_fp32 r1 fps=0
+[19/72] seg_fused_384x672@cuda_fp32 r1 fps=30
+[20/72] seg_fused_384x672@trt_int8 r1 fps=0
+[21/72] seg_fused_288x512@trt_fp32 r1 fps=0
+[22/72] seg_fused_384x672@trt_fp16 r1 fps=30
+[23/72] detector_fused@trt_int8 r1 fps=0
+[24/72] seg_fused_288x512@trt_fp32 r1 fps=30
+[25/72] seg_fused_288x512@trt_int8 r2 fps=0
+[26/72] seg_fused_288x512@trt_fp16 r2 fps=0
+[27/72] seg_fused_288x512@trt_fp32 r2 fps=30
+[28/72] seg_fused_384x672@trt_int8 r2 fps=0
+[29/72] seg_fused_288x512@cuda_fp32 r2 fps=0
+[30/72] detector_fused@trt_int8 r2 fps=30
+[31/72] detector_fused@trt_int8 r2 fps=0
+[32/72] seg_fused_288x512@trt_int8 r2 fps=30
+[33/72] seg_fused_384x672@trt_fp16 r2 fps=0
+[34/72] seg_fused_288x512@trt_fp32 r2 fps=0
+[35/72] detector_fused@trt_fp32 r2 fps=0
+[36/72] seg_fused_384x672@trt_fp32 r2 fps=30
+[37/72] seg_fused_384x672@trt_fp32 r2 fps=0
+[38/72] seg_fused_384x672@trt_fp16 r2 fps=30
+[39/72] detector_fused@cuda_fp32 r2 fps=0
+[40/72] seg_fused_384x672@trt_int8 r2 fps=30
+[41/72] seg_fused_288x512@trt_fp16 r2 fps=30
+[42/72] seg_fused_288x512@cuda_fp32 r2 fps=30
+[43/72] seg_fused_384x672@cuda_fp32 r2 fps=30
+[44/72] detector_fused@trt_fp16 r2 fps=30
+[45/72] detector_fused@trt_fp32 r2 fps=30
+[46/72] detector_fused@trt_fp16 r2 fps=0
+[47/72] seg_fused_384x672@cuda_fp32 r2 fps=0
+[48/72] detector_fused@cuda_fp32 r2 fps=30
+[49/72] seg_fused_384x672@trt_fp16 r3 fps=30
+[50/72] seg_fused_384x672@trt_fp16 r3 fps=0
+[51/72] seg_fused_384x672@trt_int8 r3 fps=30
+[52/72] seg_fused_288x512@trt_int8 r3 fps=30
+[53/72] detector_fused@cuda_fp32 r3 fps=0
+[54/72] seg_fused_288x512@cuda_fp32 r3 fps=30
+[55/72] detector_fused@trt_fp32 r3 fps=30
+[56/72] seg_fused_288x512@trt_int8 r3 fps=0
+[57/72] seg_fused_384x672@cuda_fp32 r3 fps=0
+[58/72] seg_fused_384x672@cuda_fp32 r3 fps=30
+[59/72] seg_fused_288x512@trt_fp32 r3 fps=0
+[60/72] detector_fused@trt_int8 r3 fps=0
+[61/72] detector_fused@cuda_fp32 r3 fps=30
+[62/72] seg_fused_384x672@trt_fp32 r3 fps=0
+[63/72] detector_fused@trt_fp32 r3 fps=0
+[64/72] seg_fused_384x672@trt_fp32 r3 fps=30
+[65/72] seg_fused_288x512@trt_fp16 r3 fps=0
+[66/72] seg_fused_288x512@cuda_fp32 r3 fps=0
+[67/72] seg_fused_384x672@trt_int8 r3 fps=0
+[68/72] detector_fused@trt_fp16 r3 fps=0
+[69/72] detector_fused@trt_int8 r3 fps=30
+[70/72] detector_fused@trt_fp16 r3 fps=30
+[71/72] seg_fused_288x512@trt_fp16 r3 fps=30
+[72/72] seg_fused_288x512@trt_fp32 r3 fps=30
+Traceback (most recent call last):
+  File "E:\my_stuff\budget scheduler\scripts\run_stage5.py", line 168, in <module>
+    main()
+    ~~~~^^
+  File "E:\my_stuff\budget scheduler\scripts\run_stage5.py", line 164, in main
+    aggregate(cfg, out_dir)
+    ~~~~~~~~~^^^^^^^^^^^^^^
+  File "E:\my_stuff\budget scheduler\scripts\run_stage5.py", line 124, in aggregate
+    (out_dir / "summary.md").write_text(text)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\pathlib\_local.py", line 555, in write_text
+    return PathBase.write_text(self, data, encoding, errors, newline)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\pathlib\_abc.py", line 652, in write_text
+    return f.write(data)
+           ~~~~~~~^^^^^^
+  File "C:\Python313\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u0394' in position 512: character maps to <undefined>
+=== 2026-10-12T01:11:47+05:30 done
+=== 2026-10-12T01:12:31+05:30 latency re-run (first sweep invalid: CPU contention)
+[1/72] detector_fused@cuda_fp32 r1 fps=30
+[2/72] seg_fused_288x512@trt_fp16 r1 fps=30
+[3/72] detector_fused@trt_int8 r1 fps=30
+[4/72] seg_fused_288x512@cuda_fp32 r1 fps=30
+[5/72] seg_fused_288x512@cuda_fp32 r1 fps=0
+[6/72] seg_fused_288x512@trt_int8 r1 fps=30
+[7/72] seg_fused_288x512@trt_int8 r1 fps=0
+[8/72] seg_fused_384x672@trt_int8 r1 fps=30
+[9/72] seg_fused_288x512@trt_fp16 r1 fps=0
+[10/72] seg_fused_384x672@trt_fp32 r1 fps=30
+[11/72] detector_fused@trt_fp32 r1 fps=0
+[12/72] seg_fused_384x672@trt_fp16 r1 fps=0
+[13/72] seg_fused_384x672@trt_fp32 r1 fps=0
+[14/72] detector_fused@trt_fp32 r1 fps=30
+[15/72] detector_fused@trt_fp16 r1 fps=0
+[16/72] detector_fused@trt_fp16 r1 fps=30
+[17/72] seg_fused_384x672@cuda_fp32 r1 fps=0
+[18/72] detector_fused@cuda_fp32 r1 fps=0
+[19/72] seg_fused_384x672@cuda_fp32 r1 fps=30
+[20/72] seg_fused_384x672@trt_int8 r1 fps=0
+[21/72] seg_fused_288x512@trt_fp32 r1 fps=0
+[22/72] seg_fused_384x672@trt_fp16 r1 fps=30
+[23/72] detector_fused@trt_int8 r1 fps=0
+[24/72] seg_fused_288x512@trt_fp32 r1 fps=30
+[25/72] seg_fused_288x512@trt_int8 r2 fps=0
+[26/72] seg_fused_288x512@trt_fp16 r2 fps=0
+[27/72] seg_fused_288x512@trt_fp32 r2 fps=30
+[28/72] seg_fused_384x672@trt_int8 r2 fps=0
+[29/72] seg_fused_288x512@cuda_fp32 r2 fps=0
+[30/72] detector_fused@trt_int8 r2 fps=30
+[31/72] detector_fused@trt_int8 r2 fps=0
+[32/72] seg_fused_288x512@trt_int8 r2 fps=30
+[33/72] seg_fused_384x672@trt_fp16 r2 fps=0
+[34/72] seg_fused_288x512@trt_fp32 r2 fps=0
+[35/72] detector_fused@trt_fp32 r2 fps=0
+[36/72] seg_fused_384x672@trt_fp32 r2 fps=30
+[37/72] seg_fused_384x672@trt_fp32 r2 fps=0
+[38/72] seg_fused_384x672@trt_fp16 r2 fps=30
+[39/72] detector_fused@cuda_fp32 r2 fps=0
+[40/72] seg_fused_384x672@trt_int8 r2 fps=30
+[41/72] seg_fused_288x512@trt_fp16 r2 fps=30
+[42/72] seg_fused_288x512@cuda_fp32 r2 fps=30
+[43/72] seg_fused_384x672@cuda_fp32 r2 fps=30
+[44/72] detector_fused@trt_fp16 r2 fps=30
+[45/72] detector_fused@trt_fp32 r2 fps=30
+[46/72] detector_fused@trt_fp16 r2 fps=0
+[47/72] seg_fused_384x672@cuda_fp32 r2 fps=0
+[48/72] detector_fused@cuda_fp32 r2 fps=30
+[49/72] seg_fused_384x672@trt_fp16 r3 fps=30
+[50/72] seg_fused_384x672@trt_fp16 r3 fps=0
+[51/72] seg_fused_384x672@trt_int8 r3 fps=30
+[52/72] seg_fused_288x512@trt_int8 r3 fps=30
+[53/72] detector_fused@cuda_fp32 r3 fps=0
+=== 2026-10-12T01:52:06+05:30 latency re-run resumed (stopped at 53/72: low system memory)
+=== 2026-10-12T02:00:56+05:30 latency re-run resumed after interruption (52 runs kept; cuda_fp32 r3 fps0 moved to invalid/no_telemetry)
+[1/72] skip (exists) detector_fused@cuda_fp32 r1 fps=30
+[2/72] skip (exists) seg_fused_288x512@trt_fp16 r1 fps=30
+[3/72] skip (exists) detector_fused@trt_int8 r1 fps=30
+[4/72] skip (exists) seg_fused_288x512@cuda_fp32 r1 fps=30
+[5/72] skip (exists) seg_fused_288x512@cuda_fp32 r1 fps=0
+[6/72] skip (exists) seg_fused_288x512@trt_int8 r1 fps=30
+[7/72] skip (exists) seg_fused_288x512@trt_int8 r1 fps=0
+[8/72] skip (exists) seg_fused_384x672@trt_int8 r1 fps=30
+[9/72] skip (exists) seg_fused_288x512@trt_fp16 r1 fps=0
+[10/72] skip (exists) seg_fused_384x672@trt_fp32 r1 fps=30
+[11/72] skip (exists) detector_fused@trt_fp32 r1 fps=0
+[12/72] skip (exists) seg_fused_384x672@trt_fp16 r1 fps=0
+[13/72] skip (exists) seg_fused_384x672@trt_fp32 r1 fps=0
+[14/72] skip (exists) detector_fused@trt_fp32 r1 fps=30
+[15/72] skip (exists) detector_fused@trt_fp16 r1 fps=0
+[16/72] skip (exists) detector_fused@trt_fp16 r1 fps=30
+[17/72] skip (exists) seg_fused_384x672@cuda_fp32 r1 fps=0
+[18/72] skip (exists) detector_fused@cuda_fp32 r1 fps=0
+[19/72] skip (exists) seg_fused_384x672@cuda_fp32 r1 fps=30
+[20/72] skip (exists) seg_fused_384x672@trt_int8 r1 fps=0
+[21/72] skip (exists) seg_fused_288x512@trt_fp32 r1 fps=0
+[22/72] skip (exists) seg_fused_384x672@trt_fp16 r1 fps=30
+[23/72] skip (exists) detector_fused@trt_int8 r1 fps=0
+[24/72] skip (exists) seg_fused_288x512@trt_fp32 r1 fps=30
+[25/72] skip (exists) seg_fused_288x512@trt_int8 r2 fps=0
+[26/72] skip (exists) seg_fused_288x512@trt_fp16 r2 fps=0
+[27/72] skip (exists) seg_fused_288x512@trt_fp32 r2 fps=30
+[28/72] skip (exists) seg_fused_384x672@trt_int8 r2 fps=0
+[29/72] skip (exists) seg_fused_288x512@cuda_fp32 r2 fps=0
+[30/72] skip (exists) detector_fused@trt_int8 r2 fps=30
+[31/72] skip (exists) detector_fused@trt_int8 r2 fps=0
+[32/72] skip (exists) seg_fused_288x512@trt_int8 r2 fps=30
+[33/72] skip (exists) seg_fused_384x672@trt_fp16 r2 fps=0
+[34/72] skip (exists) seg_fused_288x512@trt_fp32 r2 fps=0
+[35/72] skip (exists) detector_fused@trt_fp32 r2 fps=0
+[36/72] skip (exists) seg_fused_384x672@trt_fp32 r2 fps=30
+[37/72] skip (exists) seg_fused_384x672@trt_fp32 r2 fps=0
+[38/72] skip (exists) seg_fused_384x672@trt_fp16 r2 fps=30
+[39/72] skip (exists) detector_fused@cuda_fp32 r2 fps=0
+[40/72] skip (exists) seg_fused_384x672@trt_int8 r2 fps=30
+[41/72] skip (exists) seg_fused_288x512@trt_fp16 r2 fps=30
+[42/72] skip (exists) seg_fused_288x512@cuda_fp32 r2 fps=30
+[43/72] skip (exists) seg_fused_384x672@cuda_fp32 r2 fps=30
+[44/72] skip (exists) detector_fused@trt_fp16 r2 fps=30
+[45/72] skip (exists) detector_fused@trt_fp32 r2 fps=30
+[46/72] skip (exists) detector_fused@trt_fp16 r2 fps=0
+[47/72] skip (exists) seg_fused_384x672@cuda_fp32 r2 fps=0
+[48/72] skip (exists) detector_fused@cuda_fp32 r2 fps=30
+[49/72] skip (exists) seg_fused_384x672@trt_fp16 r3 fps=30
+[50/72] skip (exists) seg_fused_384x672@trt_fp16 r3 fps=0
+[51/72] skip (exists) seg_fused_384x672@trt_int8 r3 fps=30
+[52/72] skip (exists) seg_fused_288x512@trt_int8 r3 fps=30
+[53/72] detector_fused@cuda_fp32 r3 fps=0
+[54/72] seg_fused_288x512@cuda_fp32 r3 fps=30
+[55/72] detector_fused@trt_fp32 r3 fps=30
+[56/72] seg_fused_288x512@trt_int8 r3 fps=0
+[57/72] seg_fused_384x672@cuda_fp32 r3 fps=0
+[58/72] seg_fused_384x672@cuda_fp32 r3 fps=30
+[59/72] seg_fused_288x512@trt_fp32 r3 fps=0
+[60/72] detector_fused@trt_int8 r3 fps=0
+[61/72] detector_fused@cuda_fp32 r3 fps=30
+[62/72] seg_fused_384x672@trt_fp32 r3 fps=0
+[63/72] detector_fused@trt_fp32 r3 fps=0
+[64/72] seg_fused_384x672@trt_fp32 r3 fps=30
+[65/72] seg_fused_288x512@trt_fp16 r3 fps=0
+[66/72] seg_fused_288x512@cuda_fp32 r3 fps=0
+[67/72] seg_fused_384x672@trt_int8 r3 fps=0
+[68/72] detector_fused@trt_fp16 r3 fps=0
+[69/72] detector_fused@trt_int8 r3 fps=30
+[70/72] detector_fused@trt_fp16 r3 fps=30
+[71/72] seg_fused_288x512@trt_fp16 r3 fps=30
+[72/72] seg_fused_288x512@trt_fp32 r3 fps=30
+Latency: ms, median over repeats [min, max]; each model alone, fresh process per run. Device memory: peak during the closed-loop run minus the CUDA context (median over repeats). Accuracy: detection mAP@[.5:.95] on BDD100K 100k-val (COCO classes mapped, see README); segmentation mIoU on BDD100K 10k-val. Engine build: one-off TensorRT build at first session creation.
+| model | variant | GPU p50 (closed) | e2e p50 (closed) | e2e p99 (closed) | e2e p99 @30 FPS | miss @30 FPS | device mem (MiB) | accuracy | Δ vs cuda_fp32 | engine build (s) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| detector_fused | cuda_fp32 | 10.07 [10.06, 10.23] | 10.96 [10.88, 11.03] | 14.49 [13.70, 16.56] | 17.83 [17.46, 18.08] | 0.0% | 94 | mAP 0.1335 / AP50 0.2331 | +0.0000 | – |
+| detector_fused | trt_fp32 | 5.25 [5.23, 5.30] | 6.03 [6.01, 6.08] | 8.18 [7.91, 10.29] | 14.47 [14.46, 14.59] | 0.0% | 88 | mAP 0.1334 / AP50 0.2331 | -0.0000 | 106 |
+| detector_fused | trt_fp16 | 3.47 [3.28, 3.49] | 4.23 [4.01, 4.24] | 5.63 [5.07, 9.53] | 15.77 [15.49, 22.72] | 0.1% | 86 | mAP 0.1335 / AP50 0.2333 | +0.0000 | 305 |
+| detector_fused | trt_int8 | 4.29 [3.93, 4.37] | 5.04 [4.67, 5.16] | 6.68 [6.11, 7.04] | 15.99 [15.75, 16.40] | 0.0% | 76 | mAP 0.1162 / AP50 0.2137 | -0.0172 | 406 |
+| seg_fused_384x672 | cuda_fp32 | 18.52 [18.49, 18.59] | 19.46 [19.41, 19.52] | 22.07 [20.92, 22.16] | 23.05 [22.14, 23.33] | 0.1% | 486 | mIoU 0.4395 | +0.0000 | – |
+| seg_fused_384x672 | trt_fp32 | 11.30 [11.27, 11.32] | 12.20 [12.17, 12.24] | 12.64 [12.52, 12.71] | 14.82 [14.74, 15.36] | 0.0% | 196 | mIoU 0.4395 | +0.0000 | 51 |
+| seg_fused_384x672 | trt_fp16 | 7.94 [7.91, 8.03] | 8.85 [8.80, 8.96] | 9.64 [9.32, 10.10] | 14.78 [14.69, 15.17] | 0.0% | 146 | mIoU 0.4396 | +0.0001 | 252 |
+| seg_fused_384x672 | trt_int8 | 7.49 [7.37, 7.77] | 8.41 [8.25, 8.78] | 10.24 [9.49, 11.97] | 14.88 [14.77, 14.93] | 0.0% | 128 | mIoU 0.4401 | +0.0006 | 76 |
+| seg_fused_288x512 | cuda_fp32 | 13.92 [13.27, 14.49] | 14.84 [14.18, 15.71] | 20.65 [18.83, 20.90] | 19.00 [18.70, 19.87] | 0.0% | 358 | mIoU 0.4180 | +0.0000 | – |
+| seg_fused_288x512 | trt_fp32 | 7.34 [7.33, 7.43] | 8.22 [8.21, 8.34] | 9.50 [9.03, 9.88] | 15.29 [14.75, 15.36] | 0.0% | 170 | mIoU 0.4180 | -0.0000 | 39 |
+| seg_fused_288x512 | trt_fp16 | 5.28 [5.24, 5.44] | 6.15 [6.07, 6.32] | 8.83 [7.80, 10.01] | 14.55 [14.40, 15.58] | 0.0% | 128 | mIoU 0.4181 | +0.0001 | 209 |
+| seg_fused_288x512 | trt_int8 | 5.30 [4.83, 5.58] | 6.18 [5.69, 6.46] | 8.21 [7.32, 8.72] | 22.54 [22.41, 22.80] | 0.0% | 114 | mIoU 0.4194 | +0.0014 | 63 |
+Excluded runs (not on AC power, or no GPU telemetry): none
+=== 2026-10-12T02:14:24+05:30 done

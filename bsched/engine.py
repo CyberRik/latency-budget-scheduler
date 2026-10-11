@@ -47,7 +47,11 @@ class ModelRunner:
         self.cudart = cudart
         rt = cfg["runtime"]
         self.device_id = rt.get("device_id", 0)
-        self.sess = make_session(str(resolve(cfg, self.mcfg["onnx"])), rt, "cuda")
+        self.trt = self.mcfg.get("trt")
+        if self.trt is not None:
+            rt = dict(rt, graph_optimization=cfg["tensorrt"]["graph_optimization"],
+                      tensorrt=dict(cfg["tensorrt"], engine_cache_dir=str(resolve(cfg, cfg["tensorrt"]["engine_cache_dir"]))))
+        self.sess = make_session(str(resolve(cfg, self.mcfg["onnx"])), rt, "cuda", trt=self.trt)
         inp = self.sess.get_inputs()[0]
         self.in_name = inp.name
         self.in_shape = [int(d) for d in inp.shape]

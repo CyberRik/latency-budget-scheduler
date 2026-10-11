@@ -3,3 +3,6 @@ __pycache__/
 data/
 models/*.onnx
 models/*.pt
+.wheels/
+models/trt_cache/
+results/stage5/det_preds/

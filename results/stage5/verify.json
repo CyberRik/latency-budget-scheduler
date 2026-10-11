@@ -1,0 +1,185 @@
+{
+ "detector_fused@cuda_fp32": {
+  "session_create_s": 0.3,
+  "engine_cache_hit": null,
+  "placement": {
+   "nodes_by_provider": {
+    "CUDAExecutionProvider": 242
+   },
+   "cpu_ops": {}
+  }
+ },
+ "detector_fused@trt_fp32": {
+  "session_create_s": 105.6,
+  "engine_cache_hit": false,
+  "placement": {
+   "nodes_by_provider": {
+    "TensorrtExecutionProvider": 1
+   },
+   "cpu_ops": {}
+  },
+  "engine_build_s": 105.6,
+  "vs_cuda_fp32": {
+   "frames": 20,
+   "boxes_ref": 139,
+   "boxes": 139,
+   "matched": 139,
+   "unmatched": 0,
+   "max_score_abs_diff": 0.005102634429931641
+  }
+ },
+ "detector_fused@trt_fp16": {
+  "session_create_s": 305.2,
+  "engine_cache_hit": false,
+  "placement": {
+   "nodes_by_provider": {
+    "TensorrtExecutionProvider": 1
+   },
+   "cpu_ops": {}
+  },
+  "engine_build_s": 305.2,
+  "vs_cuda_fp32": {
+   "frames": 20,
+   "boxes_ref": 139,
+   "boxes": 140,
+   "matched": 139,
+   "unmatched": 1,
+   "max_score_abs_diff": 0.06279647350311279
+  }
+ },
+ "detector_fused@trt_int8": {
+  "session_create_s": 406.3,
+  "engine_cache_hit": false,
+  "placement": {
+   "nodes_by_provider": {
+    "TensorrtExecutionProvider": 1
+   },
+   "cpu_ops": {}
+  },
+  "engine_build_s": 406.3,
+  "vs_cuda_fp32": {
+   "frames": 20,
+   "boxes_ref": 139,
+   "boxes": 126,
+   "matched": 116,
+   "unmatched": 33,
+   "max_score_abs_diff": 0.4879993796348572
+  }
+ },
+ "seg_fused_384x672@cuda_fp32": {
+  "session_create_s": 0.3,
+  "engine_cache_hit": null,
+  "placement": {
+   "nodes_by_provider": {
+    "CUDAExecutionProvider": 422
+   },
+   "cpu_ops": {}
+  }
+ },
+ "seg_fused_384x672@trt_fp32": {
+  "session_create_s": 50.8,
+  "engine_cache_hit": false,
+  "placement": {
+   "nodes_by_provider": {
+    "TensorrtExecutionProvider": 1
+   },
+   "cpu_ops": {}
+  },
+  "engine_build_s": 50.8,
+  "vs_cuda_fp32": {
+   "frames": 20,
+   "pixel_agreement_mean": 0.9998385416666666,
+   "pixel_agreement_min": 0.9995681423611111
+  }
+ },
+ "seg_fused_384x672@trt_fp16": {
+  "session_create_s": 251.9,
+  "engine_cache_hit": false,
+  "placement": {
+   "nodes_by_provider": {
+    "TensorrtExecutionProvider": 1
+   },
+   "cpu_ops": {}
+  },
+  "engine_build_s": 251.9,
+  "vs_cuda_fp32": {
+   "frames": 20,
+   "pixel_agreement_mean": 0.9995526801215278,
+   "pixel_agreement_min": 0.9991851128472222
+  }
+ },
+ "seg_fused_384x672@trt_int8": {
+  "session_create_s": 76.5,
+  "engine_cache_hit": false,
+  "placement": {
+   "nodes_by_provider": {
+    "TensorrtExecutionProvider": 1
+   },
+   "cpu_ops": {}
+  },
+  "engine_build_s": 76.5,
+  "vs_cuda_fp32": {
+   "frames": 20,
+   "pixel_agreement_mean": 0.9625931532118054,
+   "pixel_agreement_min": 0.9268098958333333
+  }
+ },
+ "seg_fused_288x512@cuda_fp32": {
+  "session_create_s": 0.2,
+  "engine_cache_hit": null,
+  "placement": {
+   "nodes_by_provider": {
+    "CUDAExecutionProvider": 422
+   },
+   "cpu_ops": {}
+  }
+ },
+ "seg_fused_288x512@trt_fp32": {
+  "session_create_s": 38.7,
+  "engine_cache_hit": false,
+  "placement": {
+   "nodes_by_provider": {
+    "TensorrtExecutionProvider": 1
+   },
+   "cpu_ops": {}
+  },
+  "engine_build_s": 38.7,
+  "vs_cuda_fp32": {
+   "frames": 20,
+   "pixel_agreement_mean": 0.999930935329861,
+   "pixel_agreement_min": 0.9998307291666667
+  }
+ },
+ "seg_fused_288x512@trt_fp16": {
+  "session_create_s": 209.4,
+  "engine_cache_hit": false,
+  "placement": {
+   "nodes_by_provider": {
+    "TensorrtExecutionProvider": 1
+   },
+   "cpu_ops": {}
+  },
+  "engine_build_s": 209.4,
+  "vs_cuda_fp32": {
+   "frames": 20,
+   "pixel_agreement_mean": 0.9995219726562501,
+   "pixel_agreement_min": 0.9986469184027778
+  }
+ },
+ "seg_fused_288x512@trt_int8": {
+  "session_create_s": 63.0,
+  "engine_cache_hit": false,
+  "placement": {
+   "nodes_by_provider": {
+    "TensorrtExecutionProvider": 1
+   },
+   "cpu_ops": {}
+  },
+  "engine_build_s": 63.0,
+  "vs_cuda_fp32": {
+   "frames": 20,
+   "pixel_agreement_mean": 0.9649943033854168,
+   "pixel_agreement_min": 0.9215169270833333
+  }
+ }
+}

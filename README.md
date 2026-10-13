@@ -1,5 +1,24 @@
 # Latency-budget scheduler for a two-model perception stack
 
+**Results** (RTX 3050 Laptop, 33 ms deadline, BDD100K frames):
+
+- **Running both models one after the other breaks down above ~31–37 FPS**
+  (30.9 FPS with 384×672 segmentation, 37.0 FPS with 288×512). Past that the
+  queue grows without bound and ~99% of detections miss
+  ([Stage 3](#stage-3-sequential-contention)).
+- **The deadline-aware scheduler keeps detection on time: 13 misses in 21 000
+  frames from 20 to 50 FPS.** It does this by shedding segmentation: masks are
+  on time for 76–98% of frames at 20–35 FPS and 46–56% at 40–50 FPS
+  ([Stage 4](#stage-4-deadline-aware-scheduler)).
+- **Key finding: at low frame rates the GPU lowers its own clock, and the
+  scheduler does worse.** At 10 FPS the SM clock averages 628 MHz, detector
+  GPU time rises from about 10 ms to 41 ms, and 82.9% of detections miss. The
+  sequential baseline misses 0–0.3% at that rate.
+- **TensorRT FP16 makes each model 2.3–2.9× faster than the CUDA FP32 baseline,
+  with no accuracy change. INT8 costs 13% of detection mAP and isn't faster than
+  FP16 for the detector**
+  ([Stage 5](#stage-5-precision-variants-fp32--fp16--int8-on-tensorrt)).
+
 Object detection (YOLOv10n) and semantic segmentation (SegFormer-B0, Cityscapes)
 run over a BDD100K frame stream on one GPU under a hard per-frame deadline
 (33 ms). Detection must always complete; segmentation is degraded or dropped
